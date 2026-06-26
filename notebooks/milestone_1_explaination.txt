@@ -1,0 +1,4 @@
+=== Milestone 1: NLP Preprocessing & Vocabulary ===
+- Implemented text cleaning and normalization (case folding, punctuation removal).
+- Built custom MCQVocabulary builder from corpus to tokenize text.
+- Extracted basic lexical similarity metrics (Jaccard similarity, word overlap, prompt/choice lengths) as baseline features.
