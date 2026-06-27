@@ -1,0 +1,33 @@
+# Core Scientific Computing
+numpy
+pandas
+
+# Machine Learning
+scikit-learn
+xgboost
+catboost
+
+# Deep Learning
+torch
+torchvision
+torchaudio
+
+# Hugging Face
+transformers
+datasets
+accelerate
+
+# Experiment Tracking
+wandb
+
+# Visualization
+matplotlib
+seaborn
+
+# Jupyter
+jupyter
+ipykernel
+notebook
+
+# Utilities
+tqdm
