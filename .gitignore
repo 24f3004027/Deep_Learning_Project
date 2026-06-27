@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual Environment
+.venv/
+
+# WandB
+wandb/
+
+# Model Checkpoints
+*.pth
+*.pt
+
+# VS Code / VSCodium
+.vscode/
