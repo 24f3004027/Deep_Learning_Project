@@ -1,0 +1,9 @@
+=== An Introduction to Deep Learning ===
+
+Deep Learning (DL) is a subset of Machine Learning (ML) that utilizes multi-layered artificial neural networks to automatically learn representations and patterns from raw data.
+
+Key Components:
+1. Artificial Neural Networks (ANN): Core structures mapping inputs to outputs via linear and non-linear transformations.
+2. Backpropagation: The mathematical process of computing gradients of the loss function using the Chain Rule of Calculus to update network weights.
+3. Optimization: Optimization algorithms (like Adam or SGD) that update weights in the direction of the local minimum.
+4. Activation Functions: Functions like ReLU, Sigmoid, and Tanh that introduce non-linearity, allowing networks to learn complex patterns.
