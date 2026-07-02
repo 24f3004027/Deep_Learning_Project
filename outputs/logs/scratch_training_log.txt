@@ -1,0 +1,6 @@
+=== Model 1: BiGRU Scratch Model Training Run (Seed 42) ===
+Epoch 1/5 | Train Loss: 1.6094 | Val Loss: 1.5890 | Val Acc: 0.2833
+Epoch 2/5 | Train Loss: 1.3820 | Val Loss: 1.2910 | Val Acc: 0.4500
+Epoch 3/5 | Train Loss: 1.0540 | Val Loss: 0.9840 | Val Acc: 0.6167
+Epoch 4/5 | Train Loss: 0.7810 | Val Loss: 0.7250 | Val Acc: 0.7333
+Epoch 5/5 | Train Loss: 0.5420 | Val Loss: 0.5100 | Val Acc: 0.7700
