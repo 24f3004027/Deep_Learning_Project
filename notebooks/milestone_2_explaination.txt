@@ -1,0 +1,4 @@
+=== Milestone 2: Neural Networks from Scratch ===
+- Implemented a baseline Feed-Forward ANN in PyTorch.
+- Designed and implemented a custom Bidirectional GRU (BiGRU) from scratch.
+- Integrated a custom Self-Attention Pooling layer to perform weighted summation of sequence tokens instead of simple mean pooling.
