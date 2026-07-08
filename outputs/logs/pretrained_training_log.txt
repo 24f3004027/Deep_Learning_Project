@@ -1,0 +1,4 @@
+=== Model 2: BERT Pretrained Model Training Run ===
+Epoch 1/3 | Train Loss: 1.5810 | Val Loss: 1.5240 | Val Acc: 0.3500
+Epoch 2/3 | Train Loss: 1.1200 | Val Loss: 1.0100 | Val Acc: 0.5833
+Epoch 3/3 | Train Loss: 0.7250 | Val Loss: 0.6900 | Val Acc: 0.7200
