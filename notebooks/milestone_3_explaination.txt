@@ -1,0 +1,4 @@
+=== Milestone 3: Pre-trained Transformer Baselines ===
+- Integrated Hugging Face's AutoModelForMultipleChoice.
+- Fine-tuned bert-base-uncased on multiple-choice science questions.
+- Formatted prompt-option pairs as inputs and set up training scripts on Kaggle.
