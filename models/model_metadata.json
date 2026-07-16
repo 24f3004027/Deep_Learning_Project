@@ -1,0 +1,37 @@
+{
+  "course_project": {
+    "roll_number": "24f3004027",
+    "project_name": "Context-Augmented MCQ Solver"
+  },
+  "models": [
+    {
+      "model_id": "model_1_scratch",
+      "name": "Custom PyTorch BiGRU + Attention",
+      "checkpoint_file": "scratch_model.pt",
+      "vocab_size": 3091,
+      "embed_dim": 128,
+      "hidden_dim": 128,
+      "attention_heads": 1,
+      "status": "expected_locally"
+    },
+    {
+      "model_id": "model_2_pretrained",
+      "name": "Fine-tuned DistilBERT MCQ Classifier",
+      "checkpoint_directory": "pretrained_model/",
+      "base_model": "distilbert-base-uncased",
+      "vocab_size": 30522,
+      "hidden_size": 768,
+      "status": "expected_locally"
+    },
+    {
+      "model_id": "model_3_choice",
+      "name": "DeBERTa-v3-small + LoRA PEFT",
+      "checkpoint_directory": "choice_model/",
+      "base_model": "microsoft/deberta-v3-small",
+      "lora_rank": 8,
+      "lora_alpha": 16,
+      "lora_target_modules": ["query_proj", "value_proj"],
+      "status": "expected_locally"
+    }
+  ]
+}
