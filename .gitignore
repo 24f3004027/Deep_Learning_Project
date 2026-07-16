@@ -1,22 +1,39 @@
-# macOS
+# macOS system files
 .DS_Store
+.AppleDouble
+.LSOverride
 
-# Python
+# Python environment and cache
 __pycache__/
 *.pyc
-
-# Jupyter
-.ipynb_checkpoints/
-
-# Virtual Environment
+*.pyo
+*.pyd
+.Python
+env/
+venv/
 .venv/
+pip-log.txt
+pip-delete-this-directory.txt
 
-# WandB
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Datasets and submissions
+data/*.csv
+data/*.parquet
+submission.csv
+outputs/submissions/
+
+# Model checkpoints and weights (prevents pushing large binary files)
+checkpoints/
+models/*.pt
+models/*.bin
+models/*.safetensors
+results/
+
+# Weights & Biases tracking logs
 wandb/
 
-# Model Checkpoints
-*.pth
-*.pt
-
-# VS Code / VSCodium
+# IDE files
 .vscode/
+.idea/
