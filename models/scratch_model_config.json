@@ -1,0 +1,15 @@
+{
+  "model_type": "bigru_attention",
+  "vocab_size": 3091,
+  "embedding_dim": 128,
+  "hidden_dim": 128,
+  "num_layers": 1,
+  "bidirectional": true,
+  "dropout": 0.3,
+  "optimizer": {
+    "type": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.01
+  },
+  "criterion": "CrossEntropyLoss"
+}
