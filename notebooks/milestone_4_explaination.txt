@@ -1,0 +1,4 @@
+=== Milestone 4: Advanced Tuning (DeBERTa & LoRA) ===
+- Upgraded the transformer architecture to microsoft/deberta-v3-small to leverage disentangled attention.
+- Applied Parameter-Efficient Fine-Tuning (PEFT) using Low-Rank Adaptation (LoRA).
+- Frozen base model weights and only updated rank-decomposition adapter matrices (r=8).
