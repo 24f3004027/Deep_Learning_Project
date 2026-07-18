@@ -1,0 +1,8 @@
+{
+  "model_type": "catboost_classifier",
+  "iterations": 500,
+  "learning_rate": 0.05,
+  "depth": 6,
+  "loss_function": "MultiClass",
+  "random_seed": 42
+}
