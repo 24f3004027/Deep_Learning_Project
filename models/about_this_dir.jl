@@ -19,6 +19,8 @@ function display_models_manifest()
     println("                           config.json, and tokenizer metadata for Model 2.")
     println("  - choice_model/        : Directory containing PEFT LoRA adapter weights (safetensors)")
     println("                           and config files for DeBERTa-v3-small.")
+    println("  - catboost_config.json : Hyperparameters for Model 4.")
+    println("  - xgboost_config.json  : Hyperparameters for Model 5.")
     println("======================================================================")
 end
 
