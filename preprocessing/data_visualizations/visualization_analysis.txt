@@ -1,0 +1,6 @@
+=== Data Visualization Insights ===
+
+1. plot_class_distribution.py: Confirms uniform label distribution. All five choices (A-E) appear roughly 400 times in the dataset.
+2. plot_prompt_length.py: Shows prompt lengths are concentrated between 50 and 110 words. This guides our sequence max_length token parameters.
+3. plot_choice_lengths.py: Indicates options have a tight length range (IQR between 5 and 20 words), preventing length-bias in model predictions.
+4. plot_overlap_distribution.py: Shows high keyword overlap between prompts and distractors, verifying the distractor keyword trap.
