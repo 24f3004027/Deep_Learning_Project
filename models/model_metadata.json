@@ -32,6 +32,24 @@
       "lora_alpha": 16,
       "lora_target_modules": ["query_proj", "value_proj"],
       "status": "expected_locally"
+    },
+    {
+      "model_id": "model_4_catboost",
+      "name": "CatBoost Tabular Classifier",
+      "checkpoint_file": "catboost_model.bin",
+      "iterations": 500,
+      "learning_rate": 0.05,
+      "depth": 6,
+      "status": "experimentation"
+    },
+    {
+      "model_id": "model_5_xgboost",
+      "name": "XGBoost Tabular Classifier",
+      "checkpoint_file": "xgboost_model.json",
+      "n_estimators": 300,
+      "learning_rate": 0.05,
+      "max_depth": 5,
+      "status": "experimentation"
     }
   ]
 }
