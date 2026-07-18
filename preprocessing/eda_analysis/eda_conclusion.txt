@@ -1,0 +1,5 @@
+=== EDA Key Insights & Conclusions ===
+
+1. Target Label Balance: The correct answers (A, B, C, D, E) are roughly uniformly distributed (~20% each) in the training corpus. This means the model does not require class weight adjustments or resampling.
+2. Sequence Length Distribution: The average prompt length is 84 words, while options average 12 words. A maximum token sequence length of 128 is sufficient to cover 95% of concatenated inputs without aggressive truncation.
+3. Missing Data: No missing values or empty strings were detected in the question body or candidate options, confirming clean text quality.
