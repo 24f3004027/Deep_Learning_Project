@@ -1,7 +1,7 @@
 # Technical Report: Smart MCQ Solver Challenge
 **Course Project: Deep Learning & Generative AI**  
 **Roll Number:** 24f3004027  
-**W&B Project Dashboard Link:** `https://wandb.ai/ramrupsatpati/MCQ-Solver-Ensemble`  
+**W&B Project Dashboard Link:** [Weights & Biases Dashboard](https://wandb.ai/24f3004027-indian-institute-of-technology-madras/24f3004027-t22026?nw=nwuser24f3004027)  
 
 ---
 
