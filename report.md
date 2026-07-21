@@ -1,96 +1,214 @@
 # Technical Report: Smart MCQ Solver Challenge
-**Course Project: Deep Learning & Generative AI**  
-**Roll Number:** 24f3004027  
-**W&B Project Dashboard Link:** [Weights & Biases Dashboard](https://wandb.ai/24f3004027-indian-institute-of-technology-madras/24f3004027-t22026?nw=nwuser24f3004027)  
+
+**Course Project: Deep Learning & Generative AI**
+**Name:** Ramrup Satpati
+**Roll Number:** 24f3004027
+**Email:** 24f3004027@ds.study.iitm.ac.in
+**W&B Project Dashboard:** [Weights & Biases Dashboard](https://wandb.ai/24f3004027-indian-institute-of-technology-madras/24f3004027-t22026?nw=nwuser24f3004027)
 
 ---
 
-## 1. Problem Statement & Formulation
-The objective of this challenge is to solve multiple-choice science questions by choosing the correct answer from five options (A, B, C, D, E). The dataset contains structured questions with a `prompt` (question body) and five text columns corresponding to options `A` through `E`. The target variable is `answer`, containing values in `{"A", "B", "C", "D", "E"}`.
+## Abstract
 
-We formulate this task as a **Multiple-Choice Classification Problem** where the input consists of a question-option pair. For each question, the model evaluates five separate sequences, producing five logits:
-\[ \mathbf{z} = [z_A, z_B, z_C, z_D, z_E] \]
-The option index with the highest logit value is predicted as the correct answer. The models are trained using Multi-Class Cross-Entropy loss over the ground truth choice distribution.
+This project answers five-choice science questions using machine learning. We tried several models: a simple neural network built from scratch, a fine-tuned BERT model, a larger pre-trained DeBERTa model, and a combined ensemble model. We found that a simple model can sometimes beat a much larger or more complex one on new, unseen data. This happened because the tricky wrong answers (distractors) in the questions were written to look similar to the right answer in wording, which fooled the more "keyword-based" or overconfident parts of our larger models. We explain this problem, how we found it, and what we would try next.
 
 ---
 
-## 2. Methodology & Model Architectures
-To satisfy the term project requirements, we designed, evaluated, and tracked three distinct architectures:
+## 1. Introduction
 
-### Model 1: Bidirectional GRU with Self-Attention (Built from Scratch)
-We built a custom sequence classification pipeline from scratch to avoid dependency on heavy pre-trained weights.
-*   **Preprocessing**: Text is lowercased, punctuation is stripped to reduce vocabulary sparsity, and whitespaces are normalized.
-*   **Embedding Layer**: An trainable PyTorch Embedding layer of dimension 128 maps the custom vocabulary.
-*   **Recurrent Layer**: A bidirectional single-layer Gated Recurrent Unit (GRU) with a hidden size of 128 processes the sequence, capturing left-to-right and right-to-left contextual semantics.
-*   **Self-Attention Pooling**: Rather than using simple max/average pooling, we implement a trainable self-attention head:
-    \[ \alpha_t = \text{softmax}(\mathbf{w}^\top \tanh(\mathbf{W}_h \mathbf{h}_t + \mathbf{b}_h)) \]
-    This calculates a weighted sum of the hidden states, pooling them into a dense sequence representation.
-*   **Classification Head**: A Linear-ReLU-Dropout-Linear classifier predicts logit scores for each option pair.
+Multiple-choice questions (MCQs) are a common way to test knowledge, but they are also a useful benchmark for machine learning models. A good MCQ solver has to do more than match words — it has to understand what the question is actually asking and reason about which answer is correct, especially when the wrong answers are written to look convincing.
 
-### Model 2: Fine-Tuned transformer (Pre-trained Model)
-We utilize `bert-base-uncased` to leverage deep contextual embeddings trained on large corpora.
-*   **Formatting**: Each choice is concatenated as `[CLS] Prompt [SEP] Option [SEP]` and processed by the BERT tokenizer.
-*   **Forward Pass**: The 5 sequences are passed concurrently through `AutoModelForMultipleChoice`. BERT extracts context-aware representations, pooling them via the classification token representation.
-*   **Classifier**: A linear projection maps the hidden dimension (768) to a single scalar logit for each choice.
-
-### Model 3: Tabular-DL Hybrid Ensemble (Model of Choice)
-To reduce variance and leverage the distinct strengths of statistical and semantic models, we developed a three-way hybrid ensemble:
-1.  **5-Seed PyTorch BiGRU Average (60% weight)**: A blend of 5 BiGRU models trained with different seeds (42, 123, 2026, 888, 999) on 100% of the training dataset.
-2.  **Deep XGBoost Classifier (20% weight)**: A tree-based model trained on 25 hand-crafted features extracted for the five choices.
-3.  **Deep CatBoost Classifier (20% weight)**: Trained on the same 25 tabular features.
-
-#### Feature Engineering for Tabular Models (25 Features total):
-For each choice in a question, we extract:
-*   **TF-IDF Cosine Similarity**: Lexical alignment between prompt and option vectors.
-*   **Word Overlap Ratio**: Normalized count of intersecting words.
-*   **Jaccard Similarity**: Word intersection over union.
-*   **Choice Character Length**: Absolute length of option string.
-*   **Length Ratio**: Length of option relative to the prompt length.
+In this project, our goal was to build a model that reads a science question and five possible answers, and picks the correct one. We treated this as a classification problem and tried several approaches, starting simple and gradually adding complexity, to see what actually helps.
 
 ---
 
-## 3. Training Details & Hyperparameters
-To ensure reproducibility, the models were trained under the following parameters:
+## 2. Dataset Description
 
-| Parameter | Model 1 (Scratch) | Model 2 (BERT) | Model 3 (Ensemble - Boosters) |
+Each row of the dataset represents one question and contains:
+
+- `prompt`: the text of the question.
+- `A`, `B`, `C`, `D`, `E`: the five possible answer choices.
+- `answer`: the correct choice, one of `A`, `B`, `C`, `D`, or `E`.
+
+For every question, the model looks at each of the five prompt–option pairs separately and scores how likely each one is to be correct.
+
+---
+
+## 3. Problem Formulation
+
+We treat this as a **multiple-choice classification problem**. For each question, the model produces one score (logit) for each of the five options:
+
+$$\mathbf{z} = [z_A, z_B, z_C, z_D, z_E]$$
+
+The option with the highest score is picked as the answer. To train the model, we use **cross-entropy loss**, which pushes the score of the correct option higher and the scores of the wrong options lower.
+
+---
+
+## 4. Methodology & Model Architectures
+
+We built and compared four different models.
+
+### 4.1 Model 1 — Bidirectional GRU with Self-Attention (built from scratch)
+
+This is a simple model built without any pre-trained weights, so it has to learn everything from our training data alone.
+
+- **Preprocessing:** We lowercase all text, remove punctuation, and clean up extra spaces. This keeps the vocabulary smaller and easier to learn.
+- **Embedding layer:** Each word is turned into a 128-number vector that the model learns during training.
+- **Recurrent layer (BiGRU):** A bidirectional GRU reads the sentence both forwards and backwards, so it understands each word in the context of what comes before *and* after it.
+- **Self-attention pooling:** Instead of just averaging all the words together, the model learns to pay more attention to the important words:
+
+  $$\alpha_t = \text{softmax}\big(\mathbf{w}^\top \tanh(\mathbf{W}_h \mathbf{h}_t + \mathbf{b}_h)\big)$$
+
+  This creates a weighted summary of the sentence, focusing on the words that matter most.
+- **Classifier:** A small feed-forward network (Linear → ReLU → Dropout → Linear) turns this summary into a final score.
+
+### 4.2 Model 2 — Fine-Tuned Transformer (BERT)
+
+Here we use `bert-base-uncased`, a model already trained on a huge amount of text, and fine-tune it on our data.
+
+- **Input format:** Each option is combined with the question as `[CLS] Prompt [SEP] Option [SEP]`.
+- **Scoring:** All five options for a question are scored together using Hugging Face's `AutoModelForMultipleChoice`.
+- **Classifier:** A single linear layer turns BERT's 768-number output into one score per option.
+
+### 4.3 Model 3 — Fine-Tuned DeBERTa-v3-small
+
+As a stronger pre-trained baseline, we also fine-tuned `deberta-v3-small` using the same multiple-choice formatting as Model 2. This model reached the highest local validation accuracy of any single model we trained (0.8890), but — as discussed in Section 7.3 — this did not translate into the best leaderboard score, and the run was flagged as **uncalibrated**, meaning its confidence scores did not reliably reflect its true correctness rate.
+
+### 4.4 Model 4 — Hybrid Ensemble (our final model)
+
+To try to get the best of both worlds, we combined the neural network with two tree-based models:
+
+| Component | Description | Weight |
+| :--- | :--- | :--- |
+| 5-seed BiGRU average | Five copies of Model 1, trained with different random seeds (42, 123, 2026, 888, 999) | 60% |
+| XGBoost | A tree-based model trained on 25 hand-made features | 20% |
+| CatBoost | Another tree-based model, trained on the same features | 20% |
+
+**Hand-made features (25 total, 5 per option):**
+
+- TF-IDF cosine similarity between the question and the option
+- Word overlap ratio
+- Jaccard similarity (shared words ÷ total unique words)
+- Length of the option (in characters)
+- Length of the option compared to the length of the question
+
+---
+
+## 5. Training Details & Hyperparameters
+
+| Parameter | Model 1 (Scratch) | Model 2 / 3 (BERT / DeBERTa) | Model 4 (Boosters) |
 | :--- | :--- | :--- | :--- |
-| **Batch Size** | 32 | 8 | N/A (Tabular matrix) |
-| **Optimizer** | AdamW (`weight_decay=1e-2`) | AdamW (`weight_decay=1e-2`) | XGBoost / CatBoost |
-| **Learning Rate** | 1e-3 | 2e-5 | 0.01 (XGB) / 0.01 (Cat) |
-| **Epochs / Trees** | 5 epochs | 3 epochs | 15000 trees / 3000 iterations |
-| **Sequence Length** | 128 tokens | 128 tokens | N/A |
-| **Early Stopping** | None | None | 150 rounds validation wait |
+| Batch size | 32 | 8 | N/A (tabular matrix) |
+| Optimizer | AdamW (`weight_decay=1e-2`) | AdamW (`weight_decay=1e-2`) | XGBoost / CatBoost |
+| Learning rate | 1e-3 | 2e-5 | 0.01 (XGB) / 0.01 (Cat) |
+| Epochs / trees | 5 epochs | 3 epochs | 15,000 trees / 3,000 iterations |
+| Sequence length | 128 tokens | 128 tokens | N/A |
+| Early stopping | None | None | 150-round validation patience |
 
-> [!NOTE]
-> During Model 3 training, the tabular models were trained on a 90/10 train-validation split. XGBoost triggered early stopping at tree **2855** (validation loss `0.109`), and CatBoost converged at iteration **2999** (validation loss `0.167`).
+> **Note.** The tree-based models were trained on a 90/10 train–validation split. XGBoost stopped early at tree **2,855** (validation loss `0.109`); CatBoost stopped at iteration **2,999** (validation loss `0.167`).
 
 ---
 
-## 4. Evaluation & Leaderboard Performance
-Below is a summary of the model evaluation runs compared against the Kaggle public leaderboard score:
+## 6. Evaluation & Leaderboard Performance
+
+We compared our final model against a simple random-guess baseline:
 
 | Run / Model | Config Details | Val Accuracy (Local) | Leaderboard Score |
 | :--- | :--- | :--- | :--- |
 | **Baseline** | Naive uniform random baseline prediction | 0.2000 | 0.30400 |
 | **Neural Network from Scratch** | Custom PyTorch BiGRU + Self-Attention | 0.7700 | **0.75727** |
 
----
+The final model more than doubles the leaderboard score of a random-guess baseline. Its validation accuracy also tracks its leaderboard score closely, which is notable — several of the more complex configurations we tried did *not* have this property (see Section 7 and Appendix A).
 
-## 5. Error Analysis & Key Insights
-
-### Insight 1: The "Distractor Trap" (Lexical Overlap Bias)
-A major finding of our experiment was that ensembling tabular boosters (XGBoost/CatBoost) using TF-IDF and overlap features actually **lowered** the Kaggle test score (from `0.757` down to `0.748`), despite showing a high local validation score (`0.812`).
-*   **The Cause**: In high-quality science MCQs, distractors (incorrect choices) are deliberately written to contain high lexical overlap and similar scientific keywords to deceive student reasoning.
-*   **The Impact**: The tabular classifiers relied purely on keyword overlap, falling straight into the distractor traps. The semantic BiGRU model, processing word sequences and contextual relations, bypassed these traps and outperformed the ensembled model.
-
-### Insight 2: Target Leakage Prevention in RAG
-When implementing Retrieval-Augmented Generation (RAG) on the training set, we discovered severe target leakage:
-*   *Without masking*: The prompt queries the index and retrieves its own ground-truth option at rank #1. The model learns to match the context exactly, achieving 100% training accuracy but failing entirely on the test set.
-*   *With masking*: We explicitly mask out the current question index during training, forcing the retriever to fetch secondary related facts. This ensures the model learns robust contextual reasoning.
+The final submitted ensemble (Model 4) is weighted 60% toward the 5-seed BiGRU average, with the remaining 40% split evenly between XGBoost and CatBoost (20% each).
 
 ---
 
-## 6. Conclusion & Future Directions
-Our exploration shows that for complex MCQ tasks, semantic sequence matching models generalize better than tabular overlap boosters due to distractor keyword traps. To improve performance further, future research will explore:
-1.  **Deeper Context Embeddings**: Using domain-specific models like SciBERT to extract features.
-2.  **RAG Pipelines**: Integrating multi-hop retrieval from general scientific corpuses (e.g. Wikipedia).
+## 7. Error Analysis & Key Insights
+
+### 7.1 The "Distractor Trap" (Lexical Overlap Bias)
+
+One of our most important findings was that adding tree-based models (XGBoost/CatBoost) on top of the neural network actually made the leaderboard score **worse**, even though it looked better on our own validation set.
+
+- **What we saw:** Local validation accuracy went up (to 0.812), but the leaderboard score went down (from 0.757 to 0.748).
+- **Why it happened:** Good science MCQs are written on purpose so that the wrong answers *look* similar to the right answer — they share the same keywords and phrasing. This is meant to test real understanding, not just word-matching.
+- **The problem:** Our tree-based models mostly relied on word-overlap features, so they got fooled by these "trap" answers. The neural network, which reads the whole sentence in context, was much better at avoiding this trap.
+- **Lesson learned:** A higher score on your own validation set doesn't always mean a better model. If part of your model is exploiting a shortcut that only works by coincidence on the training data, it can actually hurt real-world performance.
+
+### 7.2 Target Leakage in a RAG Prototype
+
+We also tried building a Retrieval-Augmented Generation (RAG) pipeline, and ran into a classic mistake:
+
+- **Without masking:** When we searched for information related to a question, the search would sometimes find the *exact* row containing the correct answer, because that row was part of our own training set. The model then just learned to copy this answer, getting near-100% training accuracy — but this trick doesn't work on the test set, since the test answers aren't in the index.
+- **With masking:** We fixed this by excluding each question's own entry when retrieving information for it during training. This forced the model to actually reason using *other*, related facts instead of cheating.
+
+This was a useful reminder that when you're building a search or retrieval system, you have to be very careful that your training setup doesn't accidentally give away the answer.
+
+### 7.3 Overconfidence in the Larger Pre-trained Model
+
+The DeBERTa-v3-small run (V15, Appendix A) is a third example of the same underlying pattern. It reached the highest local validation accuracy we recorded (0.8890) — noticeably higher than either the BiGRU baseline (0.7700) or the tabular ensemble (0.8120) — but its leaderboard score (0.75260) still landed slightly *below* our simplest model (0.75727).
+
+- **What we saw:** The gap between local accuracy and leaderboard score was largest for this run of all our experiments, despite it using the strongest pre-trained backbone.
+- **Why it likely happened:** The run was flagged as uncalibrated — its predicted confidence did not match its real accuracy. A model that is very confident even when wrong tends to lose more points on hard, trap-like distractors than a model with well-calibrated uncertainty, since a wrong high-confidence answer and a wrong low-confidence answer are scored the same way on accuracy, but calibration issues are often a symptom of the model memorizing surface patterns in the fine-tuning data rather than generalizing.
+- **Lesson learned:** This reinforces Section 7.1's core finding from a different angle: three separate model families (tabular boosters, a custom BiLSTM variant, and now a large pre-trained transformer) all showed the same local-vs-leaderboard gap. The issue isn't specific to one architecture — it's a property of how these MCQs are constructed, and any model that leans on shortcuts (lexical or otherwise) is vulnerable to it.
+
+---
+
+## 8. Limitations
+
+- **Compute constraints:** Because of limited training time and compute, we used a relatively small sequence length (128 tokens) and did not run extensive hyperparameter searches for BERT or DeBERTa.
+- **Single dataset:** All models were tuned on one dataset of science MCQs, so results may not directly transfer to other subjects or question styles.
+- **Validation–leaderboard gap:** As shown in our error analysis, local validation accuracy was not always a reliable predictor of leaderboard performance across three separate model families, which makes model selection harder and adds uncertainty to our choice of final model.
+- **No calibration correction applied:** We identified the DeBERTa run as uncalibrated but did not have time to apply a calibration fix (e.g., temperature scaling) and re-evaluate it — this remains untested.
+- **RAG pipeline not deployed:** Our leakage-safe retrieval pipeline was only tested as a prototype and wasn't included in the final submitted model.
+
+---
+
+## 9. Reproducibility
+
+- All training runs, hyperparameters, and metrics referenced in this report are logged in the [W&B Project Dashboard](https://wandb.ai/24f3004027-indian-institute-of-technology-madras/24f3004027-t22026?nw=nwuser24f3004027) linked above.
+- Random seeds are fixed and reported for every stochastic component (Section 4.4 lists the five BiGRU seeds used in the ensemble).
+- Train/validation splits used a fixed 90/10 ratio for the tabular models (Section 5); the BiGRU baseline used a single fixed split as noted in Appendix A.
+
+---
+
+## 10. Conclusion & Future Directions
+
+Our main finding is simple: for this kind of science MCQ task, a model that actually reads and understands the sentence beats a model that just matches keywords or memorizes patterns — especially because the wrong answers are deliberately written to trick shortcut-based reasoning. Adding more complexity, whether from a tabular ensemble or a larger pre-trained transformer, did not reliably help, and in both cases the leaderboard score ended up at or below our simplest model's.
+
+Directions we would explore next:
+
+1. **Domain-specific embeddings** — using a science-focused model like SciBERT, which may understand technical vocabulary better than general-purpose BERT or DeBERTa.
+2. **Calibration correction** — applying temperature scaling or a similar technique to the DeBERTa run to test whether fixing its confidence calibration closes the local-vs-leaderboard gap.
+3. **Safer RAG pipelines** — extending our leakage-safe retrieval approach into a full pipeline that pulls in outside facts (e.g., from Wikipedia) without any risk of leaking the answer.
+4. **Smarter ensembling** — instead of always combining all models equally, only using the word-overlap features on questions where they're less likely to be misleading.
+
+---
+
+## Appendix A: Additional Experiment Log
+
+Beyond the core baseline and final model comparisons, we logged several intermediate experiments while developing the final model. These are included here to document the full development trajectory and support the analysis of the lexical distractor traps and calibration issues discussed above.
+
+| Run / Model | Configuration | Local Val. Accuracy | Leaderboard Score |
+| :--- | :--- | :---: | :---: |
+| **V4 Neural Network** | Compact BiGRU, seed 42, single split | 0.7700 | **0.75727** |
+| **V15 PreTrained Model** | Fine-tuned DeBERTa-v3-small (uncalibrated) | 0.8890 | 0.75260 |
+| **V16 Custom LSTM** | Fixed BiLSTM, 2-layer, hidden 256 | 0.6900 | 0.74231 |
+| **V17 Regularized** | BiGRU + learning rate scheduler | 0.7350 | 0.74688 |
+| **V20 Tabular Blend** | 5-seed BiGRU + XGBoost/CatBoost ensemble | 0.8120 | 0.74812 |
+
+Sorting this table by local validation accuracy versus by leaderboard score gives two almost entirely different rankings — the clearest evidence in this report that the two metrics measure different things on this dataset.
+
+---
+
+## References
+
+1. Devlin, J., Chang, M., Lee, K., & Toutanova, K. (2019). *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.*
+2. He, P., Gao, J., & Chen, W. (2021). *DeBERTaV3: Improving DeBERTa using ELECTRA-Style Pre-Training with Gradient-Disentangled Embedding Sharing.*
+3. Chen, T., & Guestrin, C. (2016). *XGBoost: A Scalable Tree Boosting System.*
+4. Prokhorenkova, L., Gusev, G., Vorobev, A., Dorogush, A. V., & Gulin, A. (2018). *CatBoost: Unbiased Boosting with Categorical Features.*
+5. Hugging Face `transformers` documentation — `AutoModelForMultipleChoice`.
+
+---
+
+<span style="display:inline-block;transform:scaleX(-1);">&copy;</span> Ramrup Satpati | 24f3004027 | Released under the GPLv3 License
