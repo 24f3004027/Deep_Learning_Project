@@ -71,11 +71,8 @@ Below is a summary of the model evaluation runs compared against the Kaggle publ
 
 | Run / Model | Config Details | Val Accuracy (Local) | Leaderboard Score |
 | :--- | :--- | :--- | :--- |
-| **V4 Baseline** | Compact BiGRU, Seed 42, split train | 0.7700 | **0.75727** |
-| **V15 Custom LSTM** | Custom BiLSTM with shape error | Crash | N/A |
-| **V16 Custom LSTM** | Fixed BiLSTM, 2-layer, hidden 256 | 0.6900 | 0.74231 |
-| **V17 Regularized** | BiGRU, learning rate scheduler | 0.7350 | 0.74688 |
-| **V20 Tabular Blend** | 5-seed BiGRU + XGB/Cat Ensemble | 0.8120 | 0.74812 |
+| **Baseline** | Naive uniform random baseline prediction | 0.2000 | 0.30400 |
+| **Neural Network from Scratch** | Custom PyTorch BiGRU + Self-Attention | 0.7700 | **0.75727** |
 
 ---
 
