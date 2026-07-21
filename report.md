@@ -61,6 +61,13 @@ To ensure reproducibility, the models were trained under the following parameter
 | **Sequence Length** | 128 tokens | 128 tokens | N/A |
 | **Early Stopping** | None | None | 150 rounds validation wait |
 
+### 3.1 Exploratory Data Analysis & Visualizations
+During the initial preprocessing phase, we generated key statistical plots from `train.csv` to guide sequence length boundaries and check for target label bias:
+
+| Target Class Distribution | Prompt Word Lengths | Options Length Distribution |
+| :---: | :---: | :---: |
+| ![Class Distribution](outputs/class_distribution.png) | ![Prompt Lengths](outputs/prompt_lengths.png) | ![Choice Lengths](outputs/choice_lengths.png) |
+
 > [!NOTE]
 > During Model 3 training, the tabular models were trained on a 90/10 train-validation split. XGBoost triggered early stopping at tree **2855** (validation loss `0.109`), and CatBoost converged at iteration **2999** (validation loss `0.167`).
 
