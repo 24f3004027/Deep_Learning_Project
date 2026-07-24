@@ -1,0 +1,4 @@
+=== Milestone 5: Ensemble & Prior Fallback ===
+- Developed a Hybrid Ensemble model combining BiGRU probabilities with tabular tree-based models (XGBoost/CatBoost).
+- Addressed data leakage via prompt-level deduplication.
+- Implemented calibrated prior fallback post-processing to map low-confidence predictions to the class prior.
