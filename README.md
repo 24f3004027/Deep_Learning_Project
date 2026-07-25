@@ -1,12 +1,14 @@
 # Deep Learning & Generative AI Project (D&G Project)
 
-This repository contains the code and notebooks for the DL & GenAI course project (Diploma Level of BS in Data Science and Applications).
+This repository contains the code and notebooks for the DL & GenAI course project (Diploma Level of BS in Data Science and Applications, IIT Madras).
 
 ## Project Details
 *   **Project Title**: Context-Augmented Multiple-Choice QA using Deep Learning and RAG
-*   **Name**: [Your Name]
-*   **Roll No / Student ID**: [Your Roll No] (W&B Project: `[YourRollNo]-t22026`)
-*   **Kaggle Notebook**: `DL-[YourRollNo]-notebook-t22026`
+*   **Name**: Ramrup Satpati
+*   **Roll No / Student ID**: 24f3004027
+*   **Email**: 24f3004027@ds.study.iitm.ac.in
+*   **W&B Project Dashboard**: [Weights & Biases Dashboard](https://wandb.ai/24f3004027-indian-institute-of-technology-madras/24f3004027-t22026?nw=nwuser24f3004027)
+*   **Kaggle Notebook**: `DL-24f3004027-notebook-t22026`
 
 ---
 
@@ -16,6 +18,8 @@ DL_GENAI/
 ├── .venv/                      # Python virtual environment
 ├── requirements.txt            # Package dependencies
 ├── README.md                   # Project details and execution guide
+├── report.md                   # Technical project report (Markdown format)
+├── Technical_report.pdf        # Technical project report (PDF format for submission)
 ├── data/                       # Datasets
 │   ├── train.csv               # MCQ training set
 │   ├── test.csv                # MCQ test set
@@ -27,6 +31,8 @@ DL_GENAI/
 │   ├── model_scratch.py        # Model 1: Custom PyTorch BiGRU + Attention (from scratch)
 │   ├── model_pretrained.py     # Model 2: Fine-tuned DistilBERT (pretrained)
 │   ├── model_choice.py         # Model 3: DeBERTa-v3-small + LoRA PEFT + RAG (choice model)
+│   ├── catboost.py             # Experiment: CatBoost Classifier
+│   ├── xgboost.py              # Experiment: XGBoost Classifier
 │   └── ensemble.py             # Predictions ensembling and CSV formatting (Milestone 5)
 └── notebooks/                  # Interactive notebooks corresponding to milestones
     ├── milestone_1_nlp.ipynb   # Milestone 1: Classical similarity baselines
@@ -34,7 +40,7 @@ DL_GENAI/
     ├── milestone_3_rag.ipynb   # Milestone 3: Retrieval Augmentation Demonstration
     ├── milestone_4_ft.ipynb    # Milestone 4: Fine-tuning setups and logs
     ├── milestone_5_ens.ipynb   # Milestone 5: Predictions ensembling
-    └── DL-t22026-notebook.ipynb # Combined Kaggle Submission Notebook
+    └── Baseline_Submission.ipynb # Baseline benchmark notebook
 ```
 
 ---
@@ -93,7 +99,7 @@ All model scripts are runnable via the command line. You can train them individu
 
 ## Ensembling & Final Submission
 
-Once the models are trained and checkpoints are saved in the `checkpoints/` directory, you can run the ensemble inference script to generate the final submission file:
+Once the models are trained and checkpoints are saved, you can run the ensemble inference script to generate the final submission file:
 ```bash
 python3 scripts/ensemble.py --test_csv data/test.csv --output_csv submission.csv
 ```
