@@ -68,7 +68,7 @@ def toggle_theme():
     else:
         st.session_state.theme = "dark"
 
-# Core Color Schemes for Light and Dark modes
+# Define colors for Light and Dark modes
 if st.session_state.theme == "dark":
     bg_gradient = "linear-gradient(rgba(11, 15, 25, 0.88), rgba(11, 15, 25, 0.88))"
     text_color = "#f3f4f6"
@@ -77,29 +77,30 @@ if st.session_state.theme == "dark":
     card_bg = "rgba(255, 255, 255, 0.04)"
     card_border = "rgba(255, 255, 255, 0.07)"
     card_shadow = "rgba(0, 0, 0, 0.4)"
+    link_color = "#3b82f6"
 else:
     bg_gradient = "linear-gradient(rgba(243, 244, 246, 0.85), rgba(243, 244, 246, 0.85))"
-    text_color = "#1f2937"
+    text_color = "#111827"
     input_bg = "rgba(255, 255, 255, 0.95)"
-    border_color = "rgba(0, 0, 0, 0.12)"
-    card_bg = "rgba(255, 255, 255, 0.75)"
-    card_border = "rgba(0, 0, 0, 0.08)"
-    card_shadow = "rgba(0, 0, 0, 0.1)"
+    border_color = "rgba(0, 0, 0, 0.15)"
+    card_bg = "rgba(255, 255, 255, 0.8)"
+    card_border = "rgba(0, 0, 0, 0.1)"
+    card_shadow = "rgba(0, 0, 0, 0.08)"
+    link_color = "#1d4ed8"
 
-# Inject CSS with Pan Background Animation for moving earth background
+# CSS injection to style all labels, headers, text areas, and background animation
 st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
     
-    /* Background Image & Moving Earth Animation */
-    .stApp {{
+    /* Apply background to main app containers and run pan animation */
+    .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{
         background-image: {bg_gradient}, url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600') !important;
-        background-size: 160% 160% !important; /* Scaled up to allow smooth panning space */
-        background-position: center !important;
+        background-size: 180% 180% !important; /* Scale up to enable panning range */
         background-attachment: fixed !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         color: {text_color} !important;
-        animation: pan-bg 45s ease-in-out infinite alternate !important; /* Continuous slow movement */
+        animation: pan-bg 45s ease-in-out infinite alternate !important; /* Forces background movement */
     }}
     
     @keyframes pan-bg {{
@@ -112,8 +113,9 @@ st.markdown(f"""
     .stTextArea textarea, .stTextInput input {{
         background-color: {input_bg} !important;
         color: {text_color} !important;
-        border: 1px solid {border_color} !important;
+        border: 2px solid {border_color} !important;
         border-radius: 12px !important;
+        font-weight: 500 !important;
         transition: all 0.3s ease !important;
     }}
     .stTextArea textarea:focus, .stTextInput input:focus {{
@@ -121,9 +123,10 @@ st.markdown(f"""
         box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25) !important;
     }}
     
-    /* Global labels color mapping based on theme */
-    label, p, span, h1, h2, h3, h5 {{
+    /* STUBBORN LABELS FIX: Forces light and dark modes to show labels correctly */
+    label, p, span, h1, h2, h3, h5, div[data-testid="stWidgetLabel"] p, .stTextArea label, .stTextInput label, div[data-testid="stMarkdownContainer"] p {{
         color: {text_color} !important;
+        font-weight: 600 !important;
     }}
     
     /* Buttons */
@@ -143,7 +146,7 @@ st.markdown(f"""
         box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
     }}
     
-    /* Glassmorphism card definitions */
+    /* Glassmorphic card design */
     .glass-card {{
         background: {card_bg} !important;
         backdrop-filter: blur(16px) !important;
@@ -168,40 +171,42 @@ st.markdown(f"""
 st.title("🧠 Smart MCQ Solver Challenge")
 st.write("##### *Made as a part of the Deep Learning & Generative AI Course*")
 
-# Author Info Card with Theme Toggle Button
-theme_emoji = "☀️" if st.session_state.theme == "dark" else "🌙"
-theme_label = "Switch to Light Mode" if st.session_state.theme == "dark" else "Switch to Dark Mode"
-
+# Author Info Card
 st.markdown(f"""
-<div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 25px !important;">
+<div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 20px !important;">
     <table style="width: 100%; border: none; margin: 0;">
         <tr style="background: none; border: none;">
-            <td style="border: none; padding: 0; font-weight: 500; color: {text_color} !important;">👤 Made by: <b>Ramrup Satpati</b></td>
-            <td style="border: none; padding: 0; text-align: right; font-weight: 500; color: {text_color} !important;">🆔 Roll Number: <b>24f3004027</b></td>
+            <td style="border: none; padding: 0; font-weight: 600; color: {text_color} !important;">👤 Made by: <b>Ramrup Satpati</b></td>
+            <td style="border: none; padding: 0; text-align: right; font-weight: 600; color: {text_color} !important;">🆔 Roll Number: <b>24f3004027</b></td>
         </tr>
     </table>
 </div>
 """, unsafe_allow_html=True)
 
-# Render theme button right below the info card
+# LinkedIn Link Card (replaces the old empty grey spacer)
+st.markdown(f"""
+<div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 25px !important; text-align: center;">
+    🔗 <b>Connect with me:</b> <a href="https://www.linkedin.com/in/ramrup-satpati-683970341/" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none;">Go to my LinkedIn Profile</a>
+</div>
+""", unsafe_allow_html=True)
+
+# Theme Toggle Button
+theme_emoji = "☀️" if st.session_state.theme == "dark" else "🌙"
+theme_label = "Switch to Light Mode" if st.session_state.theme == "dark" else "Switch to Dark Mode"
 st.button(f"{theme_emoji} {theme_label}", on_click=toggle_theme)
 
-# Main Form Container (rendered using Streamlit Container with border/styling)
-with st.container():
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    
-    prompt = st.text_area("Question / Prompt", placeholder="Type your multiple choice question here...", height=100)
-    col1, col2 = st.columns(2)
-    with col1:
-        opt_a = st.text_input("Option A", value="", placeholder="Enter choice A...")
-        opt_b = st.text_input("Option B", value="", placeholder="Enter choice B...")
-    with col2:
-        opt_c = st.text_input("Option C", value="", placeholder="Enter choice C...")
-        opt_d = st.text_input("Option D", value="", placeholder="Enter choice D...")
-    opt_e = st.text_input("Option E", value="", placeholder="Enter choice E...")
-    
-    submit = st.button("Analyze and Predict", type="primary")
-    st.markdown('</div>', unsafe_allow_html=True)
+# Input Forms (Separated cleanly without any empty card spacers)
+prompt = st.text_area("Question / Prompt", placeholder="Type your multiple choice question here...", height=100)
+col1, col2 = st.columns(2)
+with col1:
+    opt_a = st.text_input("Option A", value="", placeholder="Enter choice A...")
+    opt_b = st.text_input("Option B", value="", placeholder="Enter choice B...")
+with col2:
+    opt_c = st.text_input("Option C", value="", placeholder="Enter choice C...")
+    opt_d = st.text_input("Option D", value="", placeholder="Enter choice D...")
+opt_e = st.text_input("Option E", value="", placeholder="Enter choice E...")
+
+submit = st.button("Analyze and Predict", type="primary")
 
 # Process prediction
 if submit:
