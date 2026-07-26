@@ -57,70 +57,110 @@ def clean_text(text):
 
 st.set_page_config(page_title="Smart MCQ Solver", layout="centered")
 
-# Custom CSS for Premium Design Aesthetic (Glassmorphism + Network Background)
-st.markdown("""
+# Initialize theme state
+if "theme" not in st.session_state:
+    st.session_state.theme = "dark"
+
+# Function to toggle theme state
+def toggle_theme():
+    if st.session_state.theme == "dark":
+        st.session_state.theme = "light"
+    else:
+        st.session_state.theme = "dark"
+
+# Core Color Schemes for Light and Dark modes
+if st.session_state.theme == "dark":
+    bg_gradient = "linear-gradient(rgba(11, 15, 25, 0.88), rgba(11, 15, 25, 0.88))"
+    text_color = "#f3f4f6"
+    input_bg = "rgba(17, 24, 39, 0.9)"
+    border_color = "rgba(255, 255, 255, 0.08)"
+    card_bg = "rgba(255, 255, 255, 0.04)"
+    card_border = "rgba(255, 255, 255, 0.07)"
+    card_shadow = "rgba(0, 0, 0, 0.4)"
+else:
+    bg_gradient = "linear-gradient(rgba(243, 244, 246, 0.85), rgba(243, 244, 246, 0.85))"
+    text_color = "#1f2937"
+    input_bg = "rgba(255, 255, 255, 0.95)"
+    border_color = "rgba(0, 0, 0, 0.12)"
+    card_bg = "rgba(255, 255, 255, 0.75)"
+    card_border = "rgba(0, 0, 0, 0.08)"
+    card_shadow = "rgba(0, 0, 0, 0.1)"
+
+# Inject CSS with Pan Background Animation for moving earth background
+st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
     
-    /* Background Image & Overlay */
-    .stApp {
-        background-image: linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.85)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600') !important;
-        background-size: cover !important;
+    /* Background Image & Moving Earth Animation */
+    .stApp {{
+        background-image: {bg_gradient}, url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600') !important;
+        background-size: 160% 160% !important; /* Scaled up to allow smooth panning space */
         background-position: center !important;
         background-attachment: fixed !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
-        color: #f3f4f6 !important;
-    }
+        color: {text_color} !important;
+        animation: pan-bg 45s ease-in-out infinite alternate !important; /* Continuous slow movement */
+    }}
     
-    /* Text Input & Text Area styling */
-    .stTextArea textarea, .stTextInput input {
-        background-color: rgba(17, 24, 39, 0.85) !important;
-        color: #f3f4f6 !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    @keyframes pan-bg {{
+        0% {{ background-position: 0% 50%; }}
+        50% {{ background-position: 100% 50%; }}
+        100% {{ background-position: 0% 50%; }}
+    }}
+    
+    /* Text Input & Area boxes */
+    .stTextArea textarea, .stTextInput input {{
+        background-color: {input_bg} !important;
+        color: {text_color} !important;
+        border: 1px solid {border_color} !important;
         border-radius: 12px !important;
         transition: all 0.3s ease !important;
-    }
-    .stTextArea textarea:focus, .stTextInput input:focus {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
-    }
+    }}
+    .stTextArea textarea:focus, .stTextInput input:focus {{
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25) !important;
+    }}
+    
+    /* Global labels color mapping based on theme */
+    label, p, span, h1, h2, h3, h5 {{
+        color: {text_color} !important;
+    }}
     
     /* Buttons */
-    button[kind="primary"] {
+    button[kind="primary"] {{
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         border: none !important;
         border-radius: 10px !important;
         color: white !important;
         font-weight: 600 !important;
         padding: 12px 28px !important;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35) !important;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
         transition: all 0.3s ease !important;
-    }
-    button[kind="primary"]:hover {
+    }}
+    button[kind="primary"]:hover {{
         background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
         transform: translateY(-1px) !important;
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45) !important;
-    }
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
+    }}
     
-    /* Glassmorphic Container Cards */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.04) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.07) !important;
-        border-radius: 20px !important;
+    /* Glassmorphism card definitions */
+    .glass-card {{
+        background: {card_bg} !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid {card_border} !important;
+        border-radius: 18px !important;
         padding: 24px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+        box-shadow: 0 8px 32px 0 {card_shadow} !important;
         margin-top: 15px !important;
         margin-bottom: 20px !important;
         animation: fadeIn 0.8s ease-in-out;
-    }
+    }}
     
-    /* Fade In Animation */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn {{
+        from {{ opacity: 0; transform: translateY(10px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -128,35 +168,42 @@ st.markdown("""
 st.title("🧠 Smart MCQ Solver Challenge")
 st.write("##### *Made as a part of the Deep Learning & Generative AI Course*")
 
-# Author Info Card
-st.markdown("""
+# Author Info Card with Theme Toggle Button
+theme_emoji = "☀️" if st.session_state.theme == "dark" else "🌙"
+theme_label = "Switch to Light Mode" if st.session_state.theme == "dark" else "Switch to Dark Mode"
+
+st.markdown(f"""
 <div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 25px !important;">
     <table style="width: 100%; border: none; margin: 0;">
         <tr style="background: none; border: none;">
-            <td style="border: none; padding: 0; font-weight: 500;">👤 Made by: <b>Ramrup Satpati</b></td>
-            <td style="border: none; padding: 0; text-align: right; font-weight: 500;">🆔 Roll Number: <b>24f3004027</b></td>
+            <td style="border: none; padding: 0; font-weight: 500; color: {text_color} !important;">👤 Made by: <b>Ramrup Satpati</b></td>
+            <td style="border: none; padding: 0; text-align: right; font-weight: 500; color: {text_color} !important;">🆔 Roll Number: <b>24f3004027</b></td>
         </tr>
     </table>
 </div>
 """, unsafe_allow_html=True)
 
-# Main Application Glassmorphic Card
-st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+# Render theme button right below the info card
+st.button(f"{theme_emoji} {theme_label}", on_click=toggle_theme)
 
-prompt = st.text_area("Question / Prompt", placeholder="Type your multiple choice question here...", height=100)
-col1, col2 = st.columns(2)
-with col1:
-    opt_a = st.text_input("Option A", value="", placeholder="Enter choice A...")
-    opt_b = st.text_input("Option B", value="", placeholder="Enter choice B...")
-with col2:
-    opt_c = st.text_input("Option C", value="", placeholder="Enter choice C...")
-    opt_d = st.text_input("Option D", value="", placeholder="Enter choice D...")
-opt_e = st.text_input("Option E", value="", placeholder="Enter choice E...")
+# Main Form Container (rendered using Streamlit Container with border/styling)
+with st.container():
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    
+    prompt = st.text_area("Question / Prompt", placeholder="Type your multiple choice question here...", height=100)
+    col1, col2 = st.columns(2)
+    with col1:
+        opt_a = st.text_input("Option A", value="", placeholder="Enter choice A...")
+        opt_b = st.text_input("Option B", value="", placeholder="Enter choice B...")
+    with col2:
+        opt_c = st.text_input("Option C", value="", placeholder="Enter choice C...")
+        opt_d = st.text_input("Option D", value="", placeholder="Enter choice D...")
+    opt_e = st.text_input("Option E", value="", placeholder="Enter choice E...")
+    
+    submit = st.button("Analyze and Predict", type="primary")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-submit = st.button("Analyze and Predict", type="primary")
-
-st.markdown('</div>', unsafe_allow_html=True)
-
+# Process prediction
 if submit:
     choices = [opt_a, opt_b, opt_c, opt_d, opt_e]
     choice_labels = ['A', 'B', 'C', 'D', 'E']
@@ -164,7 +211,6 @@ if submit:
     weights_path = "model_scratch_42.pt"
     vocab_path = "vocab.npy"
     
-    # Check if we can run PyTorch NN model
     if os.path.exists(weights_path) and os.path.exists(vocab_path):
         try:
             word2idx = np.load(vocab_path, allow_pickle=True).item()
