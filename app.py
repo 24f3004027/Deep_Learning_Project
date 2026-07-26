@@ -55,10 +55,66 @@ def clean_text(text):
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
+# Custom CSS for Premium Design Aesthetic (Glassmorphism Dark Theme)
 st.set_page_config(page_title="Smart MCQ Solver", layout="centered")
+
+st.markdown("""
+<style>
+    /* Global Styles */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    
+    .stApp {
+        background-color: #0b0f19 !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        color: #f3f4f6 !important;
+    }
+    
+    /* Text Area & Input Styling */
+    .stTextArea textarea, .stTextInput input {
+        background-color: #111827 !important;
+        color: #f3f4f6 !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px !important;
+        transition: all 0.3s ease !important;
+    }
+    .stTextArea textarea:focus, .stTextInput input:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+    }
+    
+    /* Button Styling */
+    button[kind="primary"] {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        border: none !important;
+        border-radius: 10px !important;
+        color: white !important;
+        font-weight: 600 !important;
+        padding: 12px 28px !important;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+    button[kind="primary"]:hover {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
+    }
+    
+    /* Custom Result Card */
+    .result-card {
+        background: rgba(17, 24, 39, 0.7) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 18px !important;
+        padding: 24px !important;
+        margin-top: 24px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.title("🧠 Smart MCQ Solver Challenge")
-st.subheader("Deep Learning & Generative AI Project (Roll: 24f3004027)")
-st.write("Input a question prompt and its five choices to predict the correct answer option.")
+st.markdown("##### *Deep Learning & Generative AI Project (Roll: 24f3004027)*")
+st.write("Input a question prompt and its five choices to predict the correct answer option using semantic matching.")
 
 prompt = st.text_area("Question / Prompt", placeholder="Type your multiple choice question here...", height=100)
 col1, col2 = st.columns(2)
@@ -106,11 +162,13 @@ if st.button("Analyze and Predict", type="primary"):
                 logits = model(input_ids_tensor)
                 probs = torch.softmax(logits, dim=1)[0].numpy()
             
+            st.markdown('<div class="result-card">', unsafe_allow_html=True)
             st.markdown("### 📊 Neural Network Prediction Results")
             best_idx = np.argmax(probs)
             st.success(f"**Recommended Answer**: Option **{choice_labels[best_idx]}** with **{probs[best_idx]:.2%}** confidence.")
             for i in range(5):
                 st.write(f"Option **{choice_labels[i]}**: {probs[i]:.2%}")
+            st.markdown('</div>', unsafe_allow_html=True)
         except Exception as e:
             st.warning(f"Error loading PyTorch model: {e}. Falling back to TF-IDF matching...")
             st.stop()
@@ -132,8 +190,10 @@ if st.button("Analyze and Predict", type="primary"):
         except Exception:
             probs = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
             
+        st.markdown('<div class="result-card">', unsafe_allow_html=True)
         st.markdown("### 📊 Semantic Search Prediction Results (Fallback)")
         best_idx = np.argmax(probs)
         st.success(f"**Recommended Answer**: Option **{choice_labels[best_idx]}** with **{probs[best_idx]:.2%}** relative match score.")
         for i in range(5):
             st.write(f"Option **{choice_labels[i]}**: {probs[i]:.2%}")
+        st.markdown('</div>', unsafe_allow_html=True)
