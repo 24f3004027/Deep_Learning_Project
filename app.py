@@ -80,15 +80,16 @@ if st.session_state.theme == "dark":
     card_shadow = "rgba(0, 0, 0, 0.4)"
     link_color = "#3b82f6"
 else:
-    bg_gradient = "linear-gradient(rgba(243, 244, 246, 0.85), rgba(243, 244, 246, 0.85))"
-    text_color = "#111827"
-    placeholder_color = "rgba(17, 24, 39, 0.55)"
-    input_bg = "rgba(255, 255, 255, 0.95)"
-    border_color = "rgba(0, 0, 0, 0.15)"
-    card_bg = "rgba(255, 255, 255, 0.8)"
-    card_border = "rgba(0, 0, 0, 0.1)"
-    card_shadow = "rgba(0, 0, 0, 0.08)"
-    link_color = "#1d4ed8"
+    # Muted Slate-Blue overlay to eliminate the "flashbang" glare in light theme
+    bg_gradient = "linear-gradient(rgba(71, 85, 105, 0.85), rgba(71, 85, 105, 0.85))"
+    text_color = "#ffffff"  # Using white text on slate-blue background for premium readability
+    placeholder_color = "rgba(255, 255, 255, 0.55)"
+    input_bg = "rgba(30, 41, 59, 0.9)"  # Muted slate-grey inputs
+    border_color = "rgba(255, 255, 255, 0.12)"
+    card_bg = "rgba(255, 255, 255, 0.08)"  # Soft glassmorphic cards
+    card_border = "rgba(255, 255, 255, 0.15)"
+    card_shadow = "rgba(0, 0, 0, 0.15)"
+    link_color = "#60a5fa"
 
 # CSS injection to style all labels, headers, text areas, placeholder texts, and background animation
 st.markdown(f"""
@@ -218,7 +219,7 @@ submit = st.button("Analyze and Predict", type="primary")
 
 # Process prediction
 if submit:
-    # 🌟 CRITICAL: If inputs are empty, show a warning notification and stop execution
+    # CRITICAL: If inputs are empty, show a warning notification and stop execution
     if not prompt.strip() or not all([opt_a.strip(), opt_b.strip(), opt_c.strip(), opt_d.strip(), opt_e.strip()]):
         st.error("⚠️ Please fill out the question prompt and all five option choices before analyzing!")
     else:
@@ -256,7 +257,6 @@ if submit:
                     logits = model(input_ids_tensor)
                     probs = torch.softmax(logits, dim=1)[0].numpy()
                 
-                # Render results in a single cohesive HTML card, preventing empty spacer bar issue
                 best_idx = np.argmax(probs)
                 results_card_html = f"""
                 <div class="glass-card" style="border-left: 5px solid #2563eb !important; margin-top: 25px;">
@@ -293,7 +293,6 @@ if submit:
             except Exception:
                 probs = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
                 
-            # Render results in a single cohesive HTML card, preventing empty spacer bar issue
             best_idx = np.argmax(probs)
             results_card_html = f"""
             <div class="glass-card" style="border-left: 5px solid #2563eb !important; margin-top: 25px;">
@@ -310,7 +309,7 @@ if submit:
             """
             st.markdown(results_card_html, unsafe_allow_html=True)
 
-# Footer Section (Copyleft GPL Footer)
+# Footer Section
 st.markdown(f"""
 <hr style="border-color: {border_color}; margin-top: 50px;">
 <div style="text-align: center; font-size: 0.85em; opacity: 0.7; padding: 10px 0; color: {text_color} !important;">
