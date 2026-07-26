@@ -55,34 +55,37 @@ def clean_text(text):
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
-# Custom CSS for Premium Design Aesthetic (Glassmorphism Dark Theme)
 st.set_page_config(page_title="Smart MCQ Solver", layout="centered")
 
+# Custom CSS for Premium Design Aesthetic (Glassmorphism + Network Background)
 st.markdown("""
 <style>
-    /* Global Styles */
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
     
+    /* Background Image & Overlay */
     .stApp {
-        background-color: #0b0f19 !important;
+        background-image: linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.85)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         color: #f3f4f6 !important;
     }
     
-    /* Text Area & Input Styling */
+    /* Text Input & Text Area styling */
     .stTextArea textarea, .stTextInput input {
-        background-color: #111827 !important;
+        background-color: rgba(17, 24, 39, 0.85) !important;
         color: #f3f4f6 !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
         border-radius: 12px !important;
         transition: all 0.3s ease !important;
     }
     .stTextArea textarea:focus, .stTextInput input:focus {
         border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
     }
     
-    /* Button Styling */
+    /* Buttons */
     button[kind="primary"] {
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         border: none !important;
@@ -90,43 +93,71 @@ st.markdown("""
         color: white !important;
         font-weight: 600 !important;
         padding: 12px 28px !important;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35) !important;
         transition: all 0.3s ease !important;
     }
     button[kind="primary"]:hover {
         background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
         transform: translateY(-1px) !important;
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45) !important;
     }
     
-    /* Custom Result Card */
-    .result-card {
-        background: rgba(17, 24, 39, 0.7) !important;
+    /* Glassmorphic Container Cards */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.04) !important;
         backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        border-radius: 18px !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.07) !important;
+        border-radius: 20px !important;
         padding: 24px !important;
-        margin-top: 24px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+        margin-top: 15px !important;
+        margin-bottom: 20px !important;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+    
+    /* Fade In Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
 """, unsafe_allow_html=True)
 
+# Header Section
 st.title("🧠 Smart MCQ Solver Challenge")
-st.markdown("##### *Deep Learning & Generative AI Project (Roll: 24f3004027)*")
-st.write("Input a question prompt and its five choices to predict the correct answer option using semantic matching.")
+st.write("##### *Made as a part of the Deep Learning & Generative AI Course*")
+
+# Author Info Card
+st.markdown("""
+<div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 25px !important;">
+    <table style="width: 100%; border: none; margin: 0;">
+        <tr style="background: none; border: none;">
+            <td style="border: none; padding: 0; font-weight: 500;">👤 Made by: <b>Ramrup Satpati</b></td>
+            <td style="border: none; padding: 0; text-align: right; font-weight: 500;">🆔 Roll Number: <b>24f3004027</b></td>
+        </tr>
+    </table>
+</div>
+""", unsafe_allow_html=True)
+
+# Main Application Glassmorphic Card
+st.markdown('<div class="glass-card">', unsafe_allow_html=True)
 
 prompt = st.text_area("Question / Prompt", placeholder="Type your multiple choice question here...", height=100)
 col1, col2 = st.columns(2)
 with col1:
-    opt_a = st.text_input("Option A", value="Option A text...")
-    opt_b = st.text_input("Option B", value="Option B text...")
+    opt_a = st.text_input("Option A", value="", placeholder="Enter choice A...")
+    opt_b = st.text_input("Option B", value="", placeholder="Enter choice B...")
 with col2:
-    opt_c = st.text_input("Option C", value="Option C text...")
-    opt_d = st.text_input("Option D", value="Option D text...")
-opt_e = st.text_input("Option E", value="Option E text...")
+    opt_c = st.text_input("Option C", value="", placeholder="Enter choice C...")
+    opt_d = st.text_input("Option D", value="", placeholder="Enter choice D...")
+opt_e = st.text_input("Option E", value="", placeholder="Enter choice E...")
 
-if st.button("Analyze and Predict", type="primary"):
+submit = st.button("Analyze and Predict", type="primary")
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+if submit:
     choices = [opt_a, opt_b, opt_c, opt_d, opt_e]
     choice_labels = ['A', 'B', 'C', 'D', 'E']
     
@@ -162,7 +193,7 @@ if st.button("Analyze and Predict", type="primary"):
                 logits = model(input_ids_tensor)
                 probs = torch.softmax(logits, dim=1)[0].numpy()
             
-            st.markdown('<div class="result-card">', unsafe_allow_html=True)
+            st.markdown('<div class="glass-card" style="border-left: 5px solid #2563eb !important;">', unsafe_allow_html=True)
             st.markdown("### 📊 Neural Network Prediction Results")
             best_idx = np.argmax(probs)
             st.success(f"**Recommended Answer**: Option **{choice_labels[best_idx]}** with **{probs[best_idx]:.2%}** confidence.")
@@ -190,7 +221,7 @@ if st.button("Analyze and Predict", type="primary"):
         except Exception:
             probs = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
             
-        st.markdown('<div class="result-card">', unsafe_allow_html=True)
+        st.markdown('<div class="glass-card" style="border-left: 5px solid #2563eb !important;">', unsafe_allow_html=True)
         st.markdown("### 📊 Semantic Search Prediction Results (Fallback)")
         best_idx = np.argmax(probs)
         st.success(f"**Recommended Answer**: Option **{choice_labels[best_idx]}** with **{probs[best_idx]:.2%}** relative match score.")
