@@ -196,14 +196,17 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# LinkedIn Link Card (replaces the old empty grey spacer)
+# LinkedIn, Email, and GitHub Links Card
 st.markdown(f"""
-<div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 20px !important; text-align: center;">
-    🔗 <b>Connect with me:</b> <a href="https://www.linkedin.com/in/ramrup-satpati-683970341/" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none;">Go to my LinkedIn Profile</a>
+<div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 20px !important; text-align: center; color: {text_color} !important; font-weight: 600;">
+    🔗 <b>Connect with me:</b> 
+    <a href="https://www.linkedin.com/in/ramrup-satpati-683970341/" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">LinkedIn</a> | 
+    <a href="mailto:ramrupsatpati@gmail.com" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">Email</a> | 
+    <a href="https://github.com/RSNPIIT" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">GitHub</a>
 </div>
 """, unsafe_allow_html=True)
 
-# Project Overview & Description Card
+# Project Overview Card
 st.markdown(f"""
 <div class="glass-card" style="margin-bottom: 25px !important;">
     <h3 style="color: {text_color} !important; margin-top: 0; font-size: 1.3em;">ℹ️ Project Information</h3>
@@ -274,7 +277,6 @@ if submit:
                     logits = model(input_ids_tensor)
                     probs = torch.softmax(logits, dim=1)[0].numpy()
                 
-                # Render results in a single cohesive HTML card, preventing empty spacer bar issue
                 best_idx = np.argmax(probs)
                 results_card_html = f"""
                 <div class="glass-card" style="border-left: 5px solid #2563eb !important; margin-top: 25px;">
