@@ -101,6 +101,7 @@ st.markdown(f"""
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{
         background-image: {bg_gradient}, url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600') !important;
         background-size: 180% 180% !important; /* Scale up to enable panning range */
+        background-position: center !important;
         background-attachment: fixed !important;
         font-family: 'Space Grotesk', sans-serif !important;
         color: {text_color} !important;
@@ -176,6 +177,15 @@ st.markdown(f"""
     @keyframes fadeIn {{
         from {{ opacity: 0; transform: translateY(10px); }}
         to {{ opacity: 1; transform: translateY(0); }}
+    }}
+    
+    /* PRODUCTION CLEANUP: Hide Streamlit header, footer, MainMenu, and hover tooltips */
+    #MainMenu, footer, header {{
+        visibility: hidden !important;
+        height: 0 !important;
+    }}
+    .viewerBadge, [data-testid="styledViewerBadge"] {{
+        display: none !important;
     }}
 </style>
 """, unsafe_allow_html=True)
