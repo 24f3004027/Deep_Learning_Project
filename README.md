@@ -9,6 +9,7 @@ This repository contains the code and notebooks for the DL & GenAI course projec
 *   **Email**: 24f3004027@ds.study.iitm.ac.in
 *   **W&B Project Dashboard**: [Weights & Biases Dashboard](https://wandb.ai/24f3004027-indian-institute-of-technology-madras/24f3004027-t22026?nw=nwuser24f3004027)
 *   **Kaggle Notebook**: `DL-24f3004027-notebook-t22026`
+*   **Live Web Application URL**: [Streamlit MCQ Solver App](https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/)
 
 ---
 

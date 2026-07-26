@@ -5,6 +5,7 @@
 **Roll Number:** 24f3004027
 **Email:** 24f3004027@ds.study.iitm.ac.in
 **W&B Project Dashboard:** [Weights & Biases Dashboard](https://wandb.ai/24f3004027-indian-institute-of-technology-madras/24f3004027-t22026?nw=nwuser24f3004027)
+**Live Web Application URL:** [Streamlit MCQ Solver App](https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/)
 
 ---
 
