@@ -72,6 +72,7 @@ def toggle_theme():
 if st.session_state.theme == "dark":
     bg_gradient = "linear-gradient(rgba(11, 15, 25, 0.88), rgba(11, 15, 25, 0.88))"
     text_color = "#f3f4f6"
+    placeholder_color = "rgba(255, 255, 255, 0.45)"
     input_bg = "rgba(17, 24, 39, 0.9)"
     border_color = "rgba(255, 255, 255, 0.08)"
     card_bg = "rgba(255, 255, 255, 0.04)"
@@ -81,6 +82,7 @@ if st.session_state.theme == "dark":
 else:
     bg_gradient = "linear-gradient(rgba(243, 244, 246, 0.85), rgba(243, 244, 246, 0.85))"
     text_color = "#111827"
+    placeholder_color = "rgba(17, 24, 39, 0.55)"
     input_bg = "rgba(255, 255, 255, 0.95)"
     border_color = "rgba(0, 0, 0, 0.15)"
     card_bg = "rgba(255, 255, 255, 0.8)"
@@ -88,7 +90,7 @@ else:
     card_shadow = "rgba(0, 0, 0, 0.08)"
     link_color = "#1d4ed8"
 
-# CSS injection to style all labels, headers, text areas, and background animation
+# CSS injection to style all labels, headers, text areas, placeholder texts, and background animation
 st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -121,6 +123,12 @@ st.markdown(f"""
     .stTextArea textarea:focus, .stTextInput input:focus {{
         border-color: #2563eb !important;
         box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25) !important;
+    }}
+    
+    /* PLACEHOLDER VISIBILITY FIX: Forces placeholder text to stay visible in both themes */
+    textarea::placeholder, input::placeholder, .stTextArea textarea::placeholder, .stTextInput input::placeholder {{
+        color: {placeholder_color} !important;
+        opacity: 1 !important;
     }}
     
     /* STUBBORN LABELS FIX: Forces light and dark modes to show labels correctly */
@@ -195,7 +203,7 @@ theme_emoji = "☀️" if st.session_state.theme == "dark" else "🌙"
 theme_label = "Switch to Light Mode" if st.session_state.theme == "dark" else "Switch to Dark Mode"
 st.button(f"{theme_emoji} {theme_label}", on_click=toggle_theme)
 
-# Input Forms (Separated cleanly without any empty card spacers)
+# Input Forms (Clean layout, no empty HTML wrapper card)
 prompt = st.text_area("Question / Prompt", placeholder="Type your multiple choice question here...", height=100)
 col1, col2 = st.columns(2)
 with col1:
@@ -210,72 +218,102 @@ submit = st.button("Analyze and Predict", type="primary")
 
 # Process prediction
 if submit:
-    choices = [opt_a, opt_b, opt_c, opt_d, opt_e]
-    choice_labels = ['A', 'B', 'C', 'D', 'E']
-    
-    weights_path = "model_scratch_42.pt"
-    vocab_path = "vocab.npy"
-    
-    if os.path.exists(weights_path) and os.path.exists(vocab_path):
-        try:
-            word2idx = np.load(vocab_path, allow_pickle=True).item()
-            vocab_size = len(word2idx)
-            model = BiGRUAttentionMCQModel(vocab_size, embed_dim=128, hidden_dim=128)
-            model.load_state_dict(torch.load(weights_path, map_location=torch.device('cpu')))
-            model.eval()
-            
-            def encode_text(text, max_len=128):
-                cleaned = clean_text(text)
-                tokens = cleaned.split()
-                encoded = [word2idx.get(w, word2idx.get("<UNK>", 1)) for w in tokens]
-                if len(encoded) > max_len:
-                    encoded = encoded[:max_len]
-                else:
-                    encoded = encoded + [word2idx.get("<PAD>", 0)] * (max_len - len(encoded))
-                return encoded
-
-            input_ids = []
-            for choice in choices:
-                combined_text = f"{prompt} {SEP_TOKEN} {choice}"
-                input_ids.append(encode_text(combined_text))
-            
-            input_ids_tensor = torch.tensor([input_ids], dtype=torch.long)
-            with torch.no_grad():
-                logits = model(input_ids_tensor)
-                probs = torch.softmax(logits, dim=1)[0].numpy()
-            
-            st.markdown('<div class="glass-card" style="border-left: 5px solid #2563eb !important;">', unsafe_allow_html=True)
-            st.markdown("### 📊 Neural Network Prediction Results")
-            best_idx = np.argmax(probs)
-            st.success(f"**Recommended Answer**: Option **{choice_labels[best_idx]}** with **{probs[best_idx]:.2%}** confidence.")
-            for i in range(5):
-                st.write(f"Option **{choice_labels[i]}**: {probs[i]:.2%}")
-            st.markdown('</div>', unsafe_allow_html=True)
-        except Exception as e:
-            st.warning(f"Error loading PyTorch model: {e}. Falling back to TF-IDF matching...")
-            st.stop()
+    # 🌟 CRITICAL: If inputs are empty, show a warning notification and stop execution
+    if not prompt.strip() or not all([opt_a.strip(), opt_b.strip(), opt_c.strip(), opt_d.strip(), opt_e.strip()]):
+        st.error("⚠️ Please fill out the question prompt and all five option choices before analyzing!")
     else:
-        # Fallback to TF-IDF semantic match
-        cleaned_prompt = clean_text(prompt)
-        cleaned_choices = [clean_text(opt) for opt in choices]
-        corpus = [cleaned_prompt] + cleaned_choices
+        choices = [opt_a, opt_b, opt_c, opt_d, opt_e]
+        choice_labels = ['A', 'B', 'C', 'D', 'E']
         
-        try:
-            vectorizer = TfidfVectorizer(stop_words='english')
-            tfidf_matrix = vectorizer.fit_transform(corpus)
-            p_vec = tfidf_matrix[0]
-            c_vecs = tfidf_matrix[1:]
+        weights_path = "model_scratch_42.pt"
+        vocab_path = "vocab.npy"
+        
+        if os.path.exists(weights_path) and os.path.exists(vocab_path):
+            try:
+                word2idx = np.load(vocab_path, allow_pickle=True).item()
+                vocab_size = len(word2idx)
+                model = BiGRUAttentionMCQModel(vocab_size, embed_dim=128, hidden_dim=128)
+                model.load_state_dict(torch.load(weights_path, map_location=torch.device('cpu')))
+                model.eval()
+                
+                def encode_text(text, max_len=128):
+                    cleaned = clean_text(text)
+                    tokens = cleaned.split()
+                    encoded = [word2idx.get(w, word2idx.get("<UNK>", 1)) for w in tokens]
+                    if len(encoded) > max_len:
+                        encoded = encoded[:max_len]
+                    else:
+                        encoded = encoded + [word2idx.get("<PAD>", 0)] * (max_len - len(encoded))
+                    return encoded
+
+                input_ids = []
+                for choice in choices:
+                    combined_text = f"{prompt} {SEP_TOKEN} {choice}"
+                    input_ids.append(encode_text(combined_text))
+                
+                input_ids_tensor = torch.tensor([input_ids], dtype=torch.long)
+                with torch.no_grad():
+                    logits = model(input_ids_tensor)
+                    probs = torch.softmax(logits, dim=1)[0].numpy()
+                
+                # Render results in a single cohesive HTML card, preventing empty spacer bar issue
+                best_idx = np.argmax(probs)
+                results_card_html = f"""
+                <div class="glass-card" style="border-left: 5px solid #2563eb !important; margin-top: 25px;">
+                    <h3 style="color: {text_color} !important; margin-top: 0; margin-bottom: 15px;">📊 Neural Network Prediction Results</h3>
+                    <div style="background-color: rgba(37, 99, 235, 0.12); border: 1px solid #2563eb; border-radius: 10px; padding: 15px; margin: 15px 0; color: {text_color} !important; font-weight: 600;">
+                        ✅ Recommended Answer: Option {choice_labels[best_idx]} with {probs[best_idx]:.2%} confidence.
+                    </div>
+                    <p style="margin-bottom: 8px; color: {text_color} !important;">Option A: <b>{probs[0]:.2%}</b></p>
+                    <p style="margin-bottom: 8px; color: {text_color} !important;">Option B: <b>{probs[1]:.2%}</b></p>
+                    <p style="margin-bottom: 8px; color: {text_color} !important;">Option C: <b>{probs[2]:.2%}</b></p>
+                    <p style="margin-bottom: 8px; color: {text_color} !important;">Option D: <b>{probs[3]:.2%}</b></p>
+                    <p style="margin-bottom: 8px; color: {text_color} !important;">Option E: <b>{probs[4]:.2%}</b></p>
+                </div>
+                """
+                st.markdown(results_card_html, unsafe_allow_html=True)
+            except Exception as e:
+                st.warning(f"Error loading PyTorch model: {e}. Falling back to TF-IDF matching...")
+                st.stop()
+        else:
+            # Fallback to TF-IDF semantic match
+            cleaned_prompt = clean_text(prompt)
+            cleaned_choices = [clean_text(opt) for opt in choices]
+            corpus = [cleaned_prompt] + cleaned_choices
             
-            sims = cosine_similarity(p_vec, c_vecs)[0]
-            exp_sims = np.exp(sims * 5)
-            probs = exp_sims / np.sum(exp_sims)
-        except Exception:
-            probs = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-            
-        st.markdown('<div class="glass-card" style="border-left: 5px solid #2563eb !important;">', unsafe_allow_html=True)
-        st.markdown("### 📊 Semantic Search Prediction Results (Fallback)")
-        best_idx = np.argmax(probs)
-        st.success(f"**Recommended Answer**: Option **{choice_labels[best_idx]}** with **{probs[best_idx]:.2%}** relative match score.")
-        for i in range(5):
-            st.write(f"Option **{choice_labels[i]}**: {probs[i]:.2%}")
-        st.markdown('</div>', unsafe_allow_html=True)
+            try:
+                vectorizer = TfidfVectorizer(stop_words='english')
+                tfidf_matrix = vectorizer.fit_transform(corpus)
+                p_vec = tfidf_matrix[0]
+                c_vecs = tfidf_matrix[1:]
+                
+                sims = cosine_similarity(p_vec, c_vecs)[0]
+                exp_sims = np.exp(sims * 5)
+                probs = exp_sims / np.sum(exp_sims)
+            except Exception:
+                probs = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+                
+            # Render results in a single cohesive HTML card, preventing empty spacer bar issue
+            best_idx = np.argmax(probs)
+            results_card_html = f"""
+            <div class="glass-card" style="border-left: 5px solid #2563eb !important; margin-top: 25px;">
+                <h3 style="color: {text_color} !important; margin-top: 0; margin-bottom: 15px;">📊 Semantic Search Prediction Results (Fallback)</h3>
+                <div style="background-color: rgba(37, 99, 235, 0.12); border: 1px solid #2563eb; border-radius: 10px; padding: 15px; margin: 15px 0; color: {text_color} !important; font-weight: 600;">
+                    ✅ Recommended Answer: Option {choice_labels[best_idx]} with {probs[best_idx]:.2%} relative match score.
+                </div>
+                <p style="margin-bottom: 8px; color: {text_color} !important;">Option A: <b>{probs[0]:.2%}</b></p>
+                <p style="margin-bottom: 8px; color: {text_color} !important;">Option B: <b>{probs[1]:.2%}</b></p>
+                <p style="margin-bottom: 8px; color: {text_color} !important;">Option C: <b>{probs[2]:.2%}</b></p>
+                <p style="margin-bottom: 8px; color: {text_color} !important;">Option D: <b>{probs[3]:.2%}</b></p>
+                <p style="margin-bottom: 8px; color: {text_color} !important;">Option E: <b>{probs[4]:.2%}</b></p>
+            </div>
+            """
+            st.markdown(results_card_html, unsafe_allow_html=True)
+
+# Footer Section (Copyleft GPL Footer)
+st.markdown(f"""
+<hr style="border-color: {border_color}; margin-top: 50px;">
+<div style="text-align: center; font-size: 0.85em; opacity: 0.7; padding: 10px 0; color: {text_color} !important;">
+    🄯 | Copyleft Ramrup Satpati (2026) | All Rights Reversed | Released under the GNU General Public License
+</div>
+""", unsafe_allow_html=True)
