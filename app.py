@@ -94,14 +94,15 @@ else:
 # CSS injection to style all labels, headers, text areas, placeholder texts, and background animation
 st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    /* Import modern Space Grotesk font */
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
     
     /* Apply background to main app containers and run pan animation */
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{
         background-image: {bg_gradient}, url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600') !important;
         background-size: 180% 180% !important; /* Scale up to enable panning range */
         background-attachment: fixed !important;
-        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-family: 'Space Grotesk', sans-serif !important;
         color: {text_color} !important;
         animation: pan-bg 45s ease-in-out infinite alternate !important; /* Forces background movement */
     }}
@@ -118,6 +119,7 @@ st.markdown(f"""
         color: {text_color} !important;
         border: 2px solid {border_color} !important;
         border-radius: 12px !important;
+        font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 500 !important;
         transition: all 0.3s ease !important;
     }}
@@ -135,6 +137,7 @@ st.markdown(f"""
     /* STUBBORN LABELS FIX: Forces light and dark modes to show labels correctly */
     label, p, span, h1, h2, h3, h5, div[data-testid="stWidgetLabel"] p, .stTextArea label, .stTextInput label, div[data-testid="stMarkdownContainer"] p {{
         color: {text_color} !important;
+        font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 600 !important;
     }}
     
@@ -144,6 +147,7 @@ st.markdown(f"""
         border: none !important;
         border-radius: 10px !important;
         color: white !important;
+        font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 600 !important;
         padding: 12px 28px !important;
         box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
@@ -176,8 +180,8 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# Header Section
-st.title("🧠 Smart MCQ Solver Challenge")
+# Header Section with modern Rocket / Space emoji
+st.title("🚀 Smart MCQ Solver Challenge")
 st.write("##### *Made as a part of the Deep Learning & Generative AI Course*")
 
 # Author Info Card
@@ -194,8 +198,21 @@ st.markdown(f"""
 
 # LinkedIn Link Card (replaces the old empty grey spacer)
 st.markdown(f"""
-<div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 25px !important; text-align: center;">
+<div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 20px !important; text-align: center;">
     🔗 <b>Connect with me:</b> <a href="https://www.linkedin.com/in/ramrup-satpati-683970341/" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none;">Go to my LinkedIn Profile</a>
+</div>
+""", unsafe_allow_html=True)
+
+# Project Overview & Description Card
+st.markdown(f"""
+<div class="glass-card" style="margin-bottom: 25px !important;">
+    <h3 style="color: {text_color} !important; margin-top: 0; font-size: 1.3em;">ℹ️ Project Information</h3>
+    <p style="font-size: 0.95em; color: {text_color} !important; line-height: 1.5; margin-bottom: 0;">
+        This application solves scientific multiple-choice questions by ranking option relevance. 
+        It integrates a custom-built <b>Bidirectional LSTM + Self-Attention</b> sequence network trained from scratch, 
+        alongside pre-trained transformer embeddings, achieving a competitive evaluation score of <b>0.757 MAP@3</b> 
+        on the public leaderboard (outperforming the random baseline of 0.304).
+    </p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -204,7 +221,7 @@ theme_emoji = "☀️" if st.session_state.theme == "dark" else "🌙"
 theme_label = "Switch to Light Mode" if st.session_state.theme == "dark" else "Switch to Dark Mode"
 st.button(f"{theme_emoji} {theme_label}", on_click=toggle_theme)
 
-# Input Forms (Clean layout, no empty HTML wrapper card)
+# Input Forms (Clean layout)
 prompt = st.text_area("Question / Prompt", placeholder="Type your multiple choice question here...", height=100)
 col1, col2 = st.columns(2)
 with col1:
@@ -257,6 +274,7 @@ if submit:
                     logits = model(input_ids_tensor)
                     probs = torch.softmax(logits, dim=1)[0].numpy()
                 
+                # Render results in a single cohesive HTML card, preventing empty spacer bar issue
                 best_idx = np.argmax(probs)
                 results_card_html = f"""
                 <div class="glass-card" style="border-left: 5px solid #2563eb !important; margin-top: 25px;">
