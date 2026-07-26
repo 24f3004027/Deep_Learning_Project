@@ -101,7 +101,6 @@ st.markdown(f"""
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{
         background-image: {bg_gradient}, url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600') !important;
         background-size: 180% 180% !important; /* Scale up to enable panning range */
-        background-position: center !important;
         background-attachment: fixed !important;
         font-family: 'Space Grotesk', sans-serif !important;
         color: {text_color} !important;
@@ -184,8 +183,11 @@ st.markdown(f"""
         visibility: hidden !important;
         height: 0 !important;
     }}
-    .viewerBadge, [data-testid="styledViewerBadge"] {{
+    
+    /* CRITICAL: Hides the floating Streamlit Cloud badge and any iframes hosting it */
+    .viewerBadge, [data-testid="styledViewerBadge"], iframe[title="Show Streamlit app"] {{
         display: none !important;
+        visibility: hidden !important;
     }}
 </style>
 """, unsafe_allow_html=True)
