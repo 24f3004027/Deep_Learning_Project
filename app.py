@@ -347,6 +347,6 @@ if submit:
 st.markdown(f"""
 <hr style="border-color: {border_color}; margin-top: 50px;">
 <div style="text-align: center; font-size: 0.85em; opacity: 0.7; padding: 10px 0; color: {text_color} !important;">
-    🄯 | Copyleft Ramrup Satpati (2026) | All Rights Reversed | Released under the GNU General Public License
+    🄯 | Copyleft | Ramrup Satpati (2026) | All Rights Reversed | Released under the GNU General Public License (GPLv3 and later)
 </div>
 """, unsafe_allow_html=True)
