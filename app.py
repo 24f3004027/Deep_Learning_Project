@@ -194,7 +194,7 @@ st.markdown(f"""
 
 # Header Section with modern Rocket / Space emoji
 st.title("🚀 Smart MCQ Solver Challenge")
-st.write("##### *Made as a part of the Deep Learning & Generative AI Course*")
+st.write("##### *Made as a part of the Deep Learning & Generative AI Course (A Kaggle Competition)*")
 
 # Author Info Card
 st.markdown(f"""
@@ -214,7 +214,8 @@ st.markdown(f"""
     🔗 <b>Connect with me:</b> 
     <a href="https://www.linkedin.com/in/ramrup-satpati-683970341/" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">LinkedIn</a> | 
     <a href="mailto:ramrupsatpati@gmail.com" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">Email</a> | 
-    <a href="https://github.com/RSNPIIT" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">GitHub</a>
+    <a href="https://github.com/RSNPIIT" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">GitHub</a> | 
+    <a href="https://www.kaggle.com/ramrupsatpatiiitm" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">Kaggle</a>
 </div>
 """, unsafe_allow_html=True)
 
