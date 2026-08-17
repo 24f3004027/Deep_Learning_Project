@@ -326,6 +326,7 @@ if submit:
                 exp_sims = np.exp(sims * 8)
                 probs = exp_sims / np.sum(exp_sims)
             except Exception as e:
+                st.error(f"Fallback Error: {e}")
                 probs = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
                 
             best_idx = np.argmax(probs)
