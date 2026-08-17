@@ -189,6 +189,11 @@ st.markdown(f"""
         display: none !important;
         visibility: hidden !important;
     }}
+    
+    /* Hide the "Press Enter to apply" tooltip text instructions */
+    div[data-testid="InputInstructions"] {{
+        display: none !important;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -237,18 +242,49 @@ theme_emoji = "☀️" if st.session_state.theme == "dark" else "🌙"
 theme_label = "Switch to Light Mode" if st.session_state.theme == "dark" else "Switch to Dark Mode"
 st.button(f"{theme_emoji} {theme_label}", on_click=toggle_theme)
 
-# Input Forms (Clean layout)
-prompt = st.text_area("Question / Prompt", placeholder="Type your multiple choice question here...", height=100)
+# Initialize input keys in session state to enable clearing
+for key in ["prompt_input", "opt_a_input", "opt_b_input", "opt_c_input", "opt_d_input", "opt_e_input"]:
+    if key not in st.session_state:
+        st.session_state[key] = ""
+
+# Input Forms (Clean layout with keys bound to session state)
+st.text_area("Question / Prompt", key="prompt_input", placeholder="Type your multiple choice question here...", height=100)
 col1, col2 = st.columns(2)
 with col1:
-    opt_a = st.text_input("Option A", value="", placeholder="Enter choice A...")
-    opt_b = st.text_input("Option B", value="", placeholder="Enter choice B...")
+    st.text_input("Option A", key="opt_a_input", placeholder="Enter choice A...")
+    st.text_input("Option B", key="opt_b_input", placeholder="Enter choice B...")
 with col2:
-    opt_c = st.text_input("Option C", value="", placeholder="Enter choice C...")
-    opt_d = st.text_input("Option D", value="", placeholder="Enter choice D...")
-opt_e = st.text_input("Option E", value="", placeholder="Enter choice E...")
+    st.text_input("Option C", key="opt_c_input", placeholder="Enter choice C...")
+    st.text_input("Option D", key="opt_d_input", placeholder="Enter choice D...")
+st.text_input("Option E", key="opt_e_input", placeholder="Enter choice E...")
 
-submit = st.button("Analyze and Predict", type="primary")
+# Bind variables back for downstream logic compatibility
+prompt = st.session_state.prompt_input
+opt_a = st.session_state.opt_a_input
+opt_b = st.session_state.opt_b_input
+opt_c = st.session_state.opt_c_input
+opt_d = st.session_state.opt_d_input
+opt_e = st.session_state.opt_e_input
+
+# Two-column layout for Submit and Clear buttons
+btn_col1, btn_col2 = st.columns(2)
+with btn_col1:
+    submit = st.button("Analyze and Predict", type="primary", use_container_width=True)
+with btn_col2:
+    clear = st.button("Clear Input Fields", use_container_width=True)
+
+# Handle the Clear button action
+if clear:
+    if not prompt.strip() and not any([opt_a.strip(), opt_b.strip(), opt_c.strip(), opt_d.strip(), opt_e.strip()]):
+        st.info("ℹ️ Nothing to clear, please fill in some content first!")
+    else:
+        st.session_state.prompt_input = ""
+        st.session_state.opt_a_input = ""
+        st.session_state.opt_b_input = ""
+        st.session_state.opt_c_input = ""
+        st.session_state.opt_d_input = ""
+        st.session_state.opt_e_input = ""
+        st.rerun()
 
 # Process prediction
 if submit:
