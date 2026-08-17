@@ -201,9 +201,8 @@ st.markdown(f"""
 <div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 20px !important;">
     <table style="width: 100%; border: none; margin: 0;">
         <tr style="background: none; border: none;">
-            <td style="border: none; padding: 0; font-weight: 600; color: {text_color} !important; width: 35%;">👤 Made by: <b>Ramrup Satpati</b></td>
-            <td style="border: none; padding: 0; text-align: center; font-weight: 600; color: {text_color} !important; width: 30%;">🪪 ID Proof: <a href="https://docs.google.com/document/d/183EmUvIv7RPPFIoGvPvZChAEAJv_6TumPKvTskoHWQE/edit?usp=sharing" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none;">Click Here</a></td>
-            <td style="border: none; padding: 0; text-align: right; font-weight: 600; color: {text_color} !important; width: 35%;">🆔 Roll Number: <b>24f3004027</b></td>
+            <td style="border: none; padding: 0; font-weight: 600; color: {text_color} !important;">👤 Made by: <b>Ramrup Satpati</b></td>
+            <td style="border: none; padding: 0; text-align: right; font-weight: 600; color: {text_color} !important;">🆔 Roll Number: <b>24f3004027</b></td>
         </tr>
     </table>
 </div>
