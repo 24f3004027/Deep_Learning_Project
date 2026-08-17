@@ -315,15 +315,17 @@ if submit:
             corpus = [cleaned_prompt] + cleaned_choices
             
             try:
-                vectorizer = TfidfVectorizer(stop_words='english')
+                # Use character-level sub-word n-grams to handle partial variations (like spin vs spinning)
+                vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5))
                 tfidf_matrix = vectorizer.fit_transform(corpus)
                 p_vec = tfidf_matrix[0]
                 c_vecs = tfidf_matrix[1:]
                 
                 sims = cosine_similarity(p_vec, c_vecs)[0]
-                exp_sims = np.exp(sims * 5)
+                # Scale similarities to make the highest prediction stand out clearly
+                exp_sims = np.exp(sims * 8)
                 probs = exp_sims / np.sum(exp_sims)
-            except Exception:
+            except Exception as e:
                 probs = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
                 
             best_idx = np.argmax(probs)
