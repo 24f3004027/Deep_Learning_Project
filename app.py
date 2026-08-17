@@ -242,6 +242,31 @@ theme_emoji = "☀️" if st.session_state.theme == "dark" else "🌙"
 theme_label = "Switch to Light Mode" if st.session_state.theme == "dark" else "Switch to Dark Mode"
 st.button(f"{theme_emoji} {theme_label}", on_click=toggle_theme)
 
+# Initialize clear info flag in session state
+if "show_clear_info" not in st.session_state:
+    st.session_state.show_clear_info = False
+
+# Define callback function to clear inputs safely before widget instantiation
+def clear_inputs():
+    # Check if all fields are empty
+    p_val = st.session_state.get("prompt_input", "")
+    a_val = st.session_state.get("opt_a_input", "")
+    b_val = st.session_state.get("opt_b_input", "")
+    c_val = st.session_state.get("opt_c_input", "")
+    d_val = st.session_state.get("opt_d_input", "")
+    e_val = st.session_state.get("opt_e_input", "")
+    
+    if not p_val.strip() and not any([a_val.strip(), b_val.strip(), c_val.strip(), d_val.strip(), e_val.strip()]):
+        st.session_state.show_clear_info = True
+    else:
+        st.session_state.prompt_input = ""
+        st.session_state.opt_a_input = ""
+        st.session_state.opt_b_input = ""
+        st.session_state.opt_c_input = ""
+        st.session_state.opt_d_input = ""
+        st.session_state.opt_e_input = ""
+        st.session_state.show_clear_info = False
+
 # Initialize input keys in session state to enable clearing
 for key in ["prompt_input", "opt_a_input", "opt_b_input", "opt_c_input", "opt_d_input", "opt_e_input"]:
     if key not in st.session_state:
@@ -271,20 +296,12 @@ btn_col1, btn_col2 = st.columns(2)
 with btn_col1:
     submit = st.button("Analyze and Predict", type="primary", use_container_width=True)
 with btn_col2:
-    clear = st.button("Clear Input Fields", use_container_width=True)
+    st.button("Clear Input Fields", on_click=clear_inputs, use_container_width=True)
 
-# Handle the Clear button action
-if clear:
-    if not prompt.strip() and not any([opt_a.strip(), opt_b.strip(), opt_c.strip(), opt_d.strip(), opt_e.strip()]):
-        st.info("ℹ️ Nothing to clear, please fill in some content first!")
-    else:
-        st.session_state.prompt_input = ""
-        st.session_state.opt_a_input = ""
-        st.session_state.opt_b_input = ""
-        st.session_state.opt_c_input = ""
-        st.session_state.opt_d_input = ""
-        st.session_state.opt_e_input = ""
-        st.rerun()
+# Display the info message if the clear flag is set
+if st.session_state.show_clear_info:
+    st.info("ℹ️ Nothing to clear, please fill in some content first!")
+    st.session_state.show_clear_info = False
 
 # Process prediction
 if submit:
