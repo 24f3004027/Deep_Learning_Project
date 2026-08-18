@@ -2,8 +2,8 @@ name: Keep App Alive
 
 on:
   schedule:
-    # Runs every 12 hours (at 00:00 and 12:00 UTC)
-    - cron: '0 */12 * * *'
+    # Runs every 8 hours to ensure it stays ahead of any idle timeouts
+    - cron: '0 */8 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 jobs:
@@ -12,4 +12,11 @@ jobs:
     steps:
       - name: Ping Streamlit App
         run: |
-          curl -I -s https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/
+          # Use a high-fidelity Chrome User-Agent to bypass Cloudflare bot filters
+          USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+          
+          echo "Pinging main landing page..."
+          curl -L -I -s -A "$USER_AGENT" https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/
+          
+          echo "Pinging healthz check endpoint..."
+          curl -L -I -s -A "$USER_AGENT" https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/healthz
