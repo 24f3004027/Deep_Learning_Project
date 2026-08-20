@@ -16,7 +16,7 @@ jobs:
           USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
           
           echo "Pinging main landing page..."
-          curl -L -I -s -A "$USER_AGENT" https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/
+          curl -L -I -s -A "$USER_AGENT" https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/ || echo "Main page ping failed or returned non-200"
           
           echo "Pinging healthz check endpoint..."
-          curl -L -I -s -A "$USER_AGENT" https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/healthz
+          curl -L -I -s -A "$USER_AGENT" https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/healthz || echo "Health check endpoint failed or timed out"
