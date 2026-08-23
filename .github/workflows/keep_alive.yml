@@ -1,22 +1,24 @@
-name: Keep App Alive
+name: Keep App Alive (Automatic Deploy)
 
 on:
   schedule:
-    # Runs every 8 hours to ensure it stays ahead of any idle timeouts
-    - cron: '0 */8 * * *'
+    # Runs every 3 days to force a minor redeploy and keep the app awake forever
+    - cron: '0 0 */3 * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
+permissions:
+  contents: write # Grants the workflow permission to push empty commits
+
 jobs:
-  ping:
+  keep_alive:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Streamlit App
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Push Empty Keep-Alive Commit
         run: |
-          # Use a high-fidelity Chrome User-Agent to bypass Cloudflare bot filters
-          USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-          
-          echo "Pinging main landing page..."
-          curl -L -I -s -A "$USER_AGENT" https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/ || echo "Main page ping failed or returned non-200"
-          
-          echo "Pinging healthz check endpoint..."
-          curl -L -I -s -A "$USER_AGENT" https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/healthz || echo "Health check endpoint failed or timed out"
+          git config --local user.email "actions@github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit --allow-empty -m "Chore: automated keep-alive refresh [skip ci]"
+          git push origin main
