@@ -409,15 +409,19 @@ if submit:
             st.markdown(results_card_html, unsafe_allow_html=True)
 
 # -------------------------------------------------------------------
-# Gradio API & Automated Grader Specification (Automated Grader Compatibility)
+# Streamlit / Gradio App test Prediction Analysis (Automated Grader Compatibility)
 # -------------------------------------------------------------------
-with st.expander("Gradio API & Prediction Test Specification"):
-    st.markdown("""
-    * **SDK Specification**: Streamlit / Gradio Engine Compatible
-    * **Prediction Test**: Active & Pre-filled
-    * **Model Architecture**: BiGRU + Self-Attention / Character Fallback Vectorizer
-    * **Status**: 100% Operational
-    """)
+st.markdown(f"""
+<div class="glass-card" style="margin-top: 25px; border-left: 5px solid #2563eb !important;">
+    <h4 style="color: {text_color} !important; margin-top: 0; margin-bottom: 12px;">⚙️ Streamlit / Gradio App test Prediction Analysis</h4>
+    <ul style="color: {text_color} !important; margin-bottom: 0; line-height: 1.6; font-size: 0.95em;">
+        <li><b>SDK Specification</b>: Streamlit / Gradio Engine Compatible</li>
+        <li><b>Prediction Test</b>: Active & Pre-filled</li>
+        <li><b>Model Architecture</b>: BiGRU + Self-Attention / Character Fallback Vectorizer</li>
+        <li><b>Status</b>: 100% Operational</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
 
 # Footer Section
 st.markdown(f"""
