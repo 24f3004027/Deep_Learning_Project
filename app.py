@@ -411,7 +411,7 @@ if submit:
 # -------------------------------------------------------------------
 # Gradio API & Automated Grader Specification (Automated Grader Compatibility)
 # -------------------------------------------------------------------
-with st.expander("⚙️ Gradio API & Prediction Test Specification"):
+with st.expander("Gradio API & Prediction Test Specification"):
     st.markdown("""
     * **SDK Specification**: Streamlit / Gradio Engine Compatible
     * **Prediction Test**: Active & Pre-filled
