@@ -273,7 +273,7 @@ if "initialized" not in st.session_state:
     st.session_state["opt_a_input"] = "Paris is the capital of France"
     st.session_state["opt_b_input"] = "Berlin is the capital of Germany"
     st.session_state["opt_c_input"] = "New Delhi is the capital of India"
-    st.session_state["opt_d_input"] = "Moscow is the capital of Soviet Union"
+    st.session_state["opt_d_input"] = "Moscow is the capital of Russia"
     st.session_state["opt_e_input"] = "Warsaw is the capital of Poland"
     st.session_state["initialized"] = True
 
