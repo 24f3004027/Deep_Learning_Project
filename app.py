@@ -269,12 +269,12 @@ def clear_inputs():
 
 # Initialize default sample test values in session state for instant live evaluation & automated scrapers
 if "initialized" not in st.session_state:
-    st.session_state["prompt_input"] = "Which animal is known as the king of the jungle?"
-    st.session_state["opt_a_input"] = "The lion is the king of the jungle."
-    st.session_state["opt_b_input"] = "The tiger is a striped animal."
-    st.session_state["opt_c_input"] = "The elephant is a large mammal."
-    st.session_state["opt_d_input"] = "The giraffe has a long neck."
-    st.session_state["opt_e_input"] = "The zebra has black and white stripes."
+    st.session_state["prompt_input"] = "What is the Capital Of France"
+    st.session_state["opt_a_input"] = "Paris is the capital of France"
+    st.session_state["opt_b_input"] = "Berlin is the capital of Germany"
+    st.session_state["opt_c_input"] = "New Delhi is the capital of India"
+    st.session_state["opt_d_input"] = "Moscow is the capital of Soviet Union"
+    st.session_state["opt_e_input"] = "Warsaw is the capital of Poland"
     st.session_state["initialized"] = True
 
 # Initialize input keys in session state if missing
