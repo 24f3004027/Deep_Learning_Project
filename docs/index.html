@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart MCQ Solver — Deep Learning & GenAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0d14;
+            --card-bg: rgba(22, 27, 38, 0.75);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #f59e0b;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.15) 0%, transparent 40%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-gold {
+            color: var(--accent-gold);
+            border-color: rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #93c5fd 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 750px;
+            margin: 0 auto 35px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 30px;
+            backdrop-filter: blur(16px);
+            transition: border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .stat-banner {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 50px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-item h4 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            margin: 0 8px;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge-row">
+                <span class="badge badge-gold">🏆 Official S-Grade (10.0 CGPA)</span>
+                <span class="badge">Rank 60 Private LB (+264 Jump)</span>
+                <span class="badge">PyTorch BiGRU + Self-Attention</span>
+                <span class="badge">GPLv3 Open Source</span>
+            </div>
+            <h1>Smart MCQ Solver Challenge</h1>
+            <p class="subtitle">Context-Augmented Multiple-Choice QA using Deep Learning, 10-Seed Multi-Model Ensembling, and Self-Attention Sequence Modeling.</p>
+            
+            <div class="cta-buttons">
+                <a href="https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/" target="_blank" class="btn btn-primary">
+                    🚀 Launch Live Streamlit App
+                </a>
+                <a href="https://github.com/24f3004027/Deep_Learning_Project" target="_blank" class="btn btn-secondary">
+                    💻 GitHub Repository
+                </a>
+                <a href="https://www.youtube.com/@R_Creates_Tech" target="_blank" class="btn btn-secondary">
+                    🎥 YouTube Channel (@R_Creates_Tech)
+                </a>
+            </div>
+        </header>
+
+        <section class="stat-banner">
+            <div class="stat-item">
+                <h4>90.76</h4>
+                <p>Final Official Score</p>
+            </div>
+            <div class="stat-item">
+                <h4>Rank 60</h4>
+                <p>Private Leaderboard</p>
+            </div>
+            <div class="stat-item">
+                <h4>0.76599</h4>
+                <p>Private MAP@3 Score</p>
+            </div>
+            <div class="stat-item">
+                <h4>10 Seeds</h4>
+                <p>Ensemble Model</p>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="card">
+                <div class="card-icon">🧠</div>
+                <h3>BiGRU + Self-Attention</h3>
+                <p>Combines 128-dimensional continuous embeddings with a Bidirectional GRU and a trainable Self-Attention Pooling layer to weight key context tokens across prompts.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h3>10-Seed Ensembling</h3>
+                <p>Averages predicted Softmax probability distributions across 10 distinct random seeds (42, 123, 2026, 888...) to smooth decision boundaries and prevent distribution shifts.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🛡️</div>
+                <h3>Leakage Elimination</h3>
+                <p>Enforces prompt-level deduplication (subset=['prompt']) to strip target leakage across cross-validation splits and ensure out-of-fold generalization.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Prior Fallback Engine</h3>
+                <p>Calculates confidence probability gaps between top predictions, defaulting to high-probability class priors ("B C A") for uncertain samples below threshold 0.30.</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with passion by <b>Ramrup Satpati</b> (24f3004027) | IIT Madras BS in Data Science & Applications</p>
+            <p style="margin-top: 10px;">
+                <a href="https://www.linkedin.com/in/ramrup-satpati-683970341/" target="_blank">LinkedIn</a> |
+                <a href="https://github.com/RSNPIIT" target="_blank">GitHub</a> |
+                <a href="https://www.kaggle.com/ramrupsatpatiiitm" target="_blank">Kaggle</a> |
+                <a href="https://www.youtube.com/@R_Creates_Tech" target="_blank">YouTube</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.8rem; opacity: 0.6;">Released under GNU General Public License v3.0 (GPLv3)</p>
+        </footer>
+    </div>
+</body>
+</html>
