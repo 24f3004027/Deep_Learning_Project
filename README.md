@@ -1,10 +1,10 @@
 # Deep Learning & Generative AI Project (D&G Project)
 
-[![Keep App Alive](https://github.com/24f3004027/Deep_Learning_Project/actions/workflows/keep_alive.yml/badge.svg)](https://github.com/24f3004027/Deep_Learning_Project/actions/workflows/keep_alive.yml)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://deeplearningproject-z7dmd9tamuvqvwexqod2pk.streamlit.app/)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat&logo=pytorch&logoColor=white)
 ![Weights & Biases](https://img.shields.io/badge/Weights_&_Biases-FFBE00?style=flat&logo=WeightsAndBiases&logoColor=black)
+![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
 This repository contains the code and notebooks for the DL & GenAI course project (Diploma Level of BS in Data Science and Applications, IIT Madras).
 
