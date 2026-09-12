@@ -1,10 +1,9 @@
-GNU GENERAL PUBLIC LICENSE
-Version 3, 29 June 2007
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
 
-Copyright (C) 2026 Ramrup Satpati <24f3004027@ds.study.iitm.ac.in>
-
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
 
                             Preamble
 
@@ -57,7 +56,7 @@ use, which is precisely where it is most unacceptable.  Therefore, we
 have designed this version of the GPL to prohibit the practice for those
 products.  If such problems arise substantially in other domains, we
 stand ready to extend this provision to those domains in future versions
-of the GPL, as needed to protect the future of users.
+of the GPL, as needed to protect the freedom of users.
 
   Finally, every program is threatened constantly by software patents.
 States should not allow patents to restrict development and use of
@@ -532,7 +531,7 @@ connection with specific products or compilations that contain the
 covered work, unless you entered into that arrangement, or that patent
 license was granted, prior to 28 March 2007.
 
-Nothing in this License shall be construed as excluding or limiting
+  Nothing in this License shall be construed as excluding or limiting
 any implied license or other defenses to infringement that may
 otherwise be available to you under applicable patent law.
 
