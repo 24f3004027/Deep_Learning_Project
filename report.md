@@ -212,4 +212,4 @@ Sorting this table by local validation accuracy versus by leaderboard score give
 
 ---
 
-<span style="display:inline-block;transform:scaleX(-1);">&copy;</span> Ramrup Satpati | 24f3004027 | Released under the GPLv3 License
+Copyleft | Ramrup Satpati | 24f3004027 | All Rights Reversed | Released under the GNU General Public License (GPLv3 and later)
