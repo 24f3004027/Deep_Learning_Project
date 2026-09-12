@@ -212,4 +212,4 @@ Sorting this table by local validation accuracy versus by leaderboard score give
 
 ---
 
-Copyleft | Ramrup Satpati | 24f3004027 | All Rights Reversed | Released under the GNU General Public License (GPLv3 and later)
+🄯 | Ramrup Satpati | 24f3004027 | All Rights Reversed | Released under the GNU General Public License (GPLv3 and later)
