@@ -213,14 +213,15 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# LinkedIn, Email, and GitHub Links Card
+# LinkedIn, Email, GitHub, Kaggle, and YouTube Links Card
 st.markdown(f"""
 <div class="glass-card" style="padding: 15px 20px !important; margin-bottom: 20px !important; text-align: center; color: {text_color} !important; font-weight: 600;">
     🔗 <b>Connect with me:</b> 
     <a href="https://www.linkedin.com/in/ramrup-satpati-683970341/" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">LinkedIn</a> | 
     <a href="mailto:ramrupsatpati@gmail.com" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">Email</a> | 
     <a href="https://github.com/RSNPIIT" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">GitHub</a> | 
-    <a href="https://www.kaggle.com/ramrupsatpatiiitm" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">Kaggle</a>
+    <a href="https://www.kaggle.com/ramrupsatpatiiitm" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">Kaggle</a> | 
+    <a href="https://www.youtube.com/@R_Creates_Tech" target="_blank" style="color: {link_color} !important; font-weight: 700; text-decoration: none; margin: 0 8px;">YouTube</a>
 </div>
 """, unsafe_allow_html=True)
 
